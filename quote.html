@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>CONSULT - Consultancy Website Template</title>
+    <title>Fletcher Chase Recruitment</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Free HTML Templates" name="keywords">
     <meta content="Free HTML Templates" name="description">
@@ -43,13 +43,13 @@
                     <a class="text-body py-2 ps-3" href=""><small>Career</small></a>
                 </div>
             </div>
-            <div class="col-md-6 text-center text-lg-end">
-                <div class="position-relative d-inline-flex align-items-center bg-primary text-white top-shape px-5">
+           <div class="col-md-6 text-center text-lg-end">
+                <div class="position-relative d-inline-flex align-items-center bg-dark text-white top-shape px-5">
                     <div class="me-3 pe-3 border-end py-2">
-                        <p class="m-0"><i class="fa fa-envelope-open me-2"></i>info@example.com</p>
+                        <p class="m-0"><i class="fa fa-envelope-open me-2"></i>rsnowden@fletcherchase.com</p>
                     </div>
                     <div class="py-2">
-                        <p class="m-0"><i class="fa fa-phone-alt me-2"></i>+012 345 6789</p>
+                        <p class="m-0"><i class="fa fa-phone-alt me-2"></i>+353 861779504</p>
                     </div>
                 </div>
             </div>
@@ -61,7 +61,7 @@
     <!-- Navbar Start -->
     <nav class="navbar navbar-expand-lg bg-white navbar-light shadow-sm px-5 py-3 py-lg-0">
         <a href="index.html" class="navbar-brand p-0">
-            <h1 class="m-0 text-uppercase text-primary"><i class="far fa-smile text-primary me-2"></i>consult</h1>
+            <h1 class="m-0 text-uppercase text-primary">Fletcher Chase</h1>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
             <span class="navbar-toggler-icon"></span>
@@ -74,12 +74,10 @@
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle active" data-bs-toggle="dropdown">Pages</a>
                     <div class="dropdown-menu m-0">
-                        <a href="blog.html" class="dropdown-item">Blog Grid</a>
-                        <a href="detail.html" class="dropdown-item">Blog Detail</a>
-                        <a href="feature.html" class="dropdown-item">Features</a>
-                        <a href="quote.html" class="dropdown-item active">Quote Form</a>
+                        <a href="service.html" class="dropdown-item">Our Services</a>
+                        <a href="quote.html" class="dropdown-item">Quote Form</a>
                         <a href="team.html" class="dropdown-item">The Team</a>
-                        <a href="testimonial.html" class="dropdown-item">Testimonial</a>
+                        <a href="testimonial.html" class="dropdown-item">Testimonials</a>
                     </div>
                 </div>
                 <a href="contact.html" class="nav-item nav-link">Contact</a>
@@ -94,9 +92,9 @@
         <div class="row">
             <div class="col-12 text-center">
                 <h1 class="display-4 text-white">Free Quote</h1>
-                <a href="">Home</a>
+                <a href="index.html">Home</a>
                 <i class="far fa-square text-primary px-2"></i>
-                <a href="">Free Quote</a>
+                <a href="quote.html">Free Quote</a>
             </div>
         </div>
     </div>
@@ -107,34 +105,38 @@
     <div class="container-fluid bg-secondary px-0">
         <div class="row g-0">
             <div class="col-lg-6 py-6 px-5">
-                <h1 class="display-5 mb-4">Request A Free Quote</h1>
-                <p class="mb-4">Kasd vero erat ea amet justo no stet, et elitr no dolore no elitr sea kasd et dolor diam tempor. Nonumy sed dolore no eirmod sit nonumy vero lorem amet stet diam at. Ea at lorem sed et, lorem et rebum ut eirmod gubergren, dolor ea duo diam justo dolor diam ipsum dolore stet stet elitr ut. Ipsum amet labore lorem lorem diam magna sea, eos sed dolore elitr.</p>
-                <form>
+                <h1 class="display-5 mb-4">Free Quote</h1>
+                <p class="mb-4">If you are looking for your next CTO or CFO, or want to set up a new team and are wondering about the talent market, or you are looking to bring in specific employee policies we are happy to give you a free quote for the services you need to drive your company forward</p>
+                <form action="https://formsubmit.co/rsnowden@fletcherchase.com" method="POST">
                     <div class="row gx-3">
                         <div class="col-6">
                             <div class="form-floating">
-                                <input type="text" class="form-control" id="form-floating-1" placeholder="John Doe">
+                                <input type="text" name="Name" class="form-control" id="form-floating-1" placeholder="Full Name" required>
                                 <label for="form-floating-1">Full Name</label>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="form-floating mb-3">
-                                <input type="email" class="form-control" id="form-floating-2" placeholder="name@example.com">
+                                <input type="email" name="Email" class="form-control" id="form-floating-2" placeholder="name@example.com" required>
                                 <label for="form-floating-2">Email address</label>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="form-floating">
-                                <select class="form-select" id="floatingSelect" aria-label="Financial Consultancy">
-                                    <option selected>Financial Consultancy</option>
-                                    <option value="1">Strategy Consultancy</option>
-                                    <option value="2">Tax Consultancy</option>
+                                <select class="form-select" name="Requirement Type" id="floatingSelect" aria-label="Financial Consultancy">
+                                    <option selected>IT Recruitment</option>
+                                    <option value="Finance Recruitmen">Finance Recruitment</option>
+                                    <option value="General Recruitment">General Recruitment</option>
+                                    <option value="Executive Search">Executive Search</option>
+                                    <option value="Human Resources Discussion">Human Resources Discussion</option>
+                                    <option value="Policy or Contract Generation">Policy or Contract Generation</option>
+                                    <option value="Other">Other</option>
                                 </select>
                                 <label for="floatingSelect">Select A Service</label>
                             </div>
                         </div>
                         <div class="col-6">
-                            <button class="btn btn-primary w-100 h-100" type="submit">Request A Quote</button>
+                            <button class="btn btn-primary w-100 h-100" type="submit">Request A Call</button>
                         </div>
                     </div>
                 </form>
@@ -150,13 +152,13 @@
     
 
     <!-- Footer Start -->
-    <div class="container-fluid bg-primary text-secondary p-5">
+    <div class="container-fluid bs-gray text-secondary p-5">
         <div class="row g-5">
             <div class="col-12 text-center">
-                <h1 class="display-5 mb-4">Stay Update!!!</h1>
-                <form class="mx-auto" style="max-width: 600px;">
+                <h1 class="display-5 mb-4">Connect With Us</h1>
+                <form action="https://formsubmit.co/rsnowden@fletcherchase.com" method="POST" class="mx-auto" style="max-width: 600px;">
                     <div class="input-group">
-                        <input type="text" class="form-control border-white p-3" placeholder="Your Email">
+                        <input type="text" name="Email" class="form-control border-white p-3" placeholder="Your Email" required>
                         <button class="btn btn-dark px-4">Sign Up</button>
                     </div>
                 </form>
@@ -171,39 +173,37 @@
                     <a class="text-secondary mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>Home</a>
                     <a class="text-secondary mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>About Us</a>
                     <a class="text-secondary mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>Our Services</a>
-                    <a class="text-secondary mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>Latest Blog Post</a>
                     <a class="text-secondary" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>Contact Us</a>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6">
                 <h3 class="text-white mb-4">Popular Links</h3>
                 <div class="d-flex flex-column justify-content-start">
-                    <a class="text-secondary mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>Home</a>
-                    <a class="text-secondary mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>About Us</a>
-                    <a class="text-secondary mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>Our Services</a>
-                    <a class="text-secondary mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>Latest Blog Post</a>
-                    <a class="text-secondary" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>Contact Us</a>
+                    <a class="text-secondary mb-2" href="index.html"><i class="bi bi-arrow-right text-primary me-2"></i>Home</a>
+                    <a class="text-secondary mb-2" href="about.html"><i class="bi bi-arrow-right text-primary me-2"></i>About Us</a>
+                    <a class="text-secondary mb-2" href="ourservices.html"><i class="bi bi-arrow-right text-primary me-2"></i>Our Services</a>
+                    <a class="text-secondary" href="contact.html"><i class="bi bi-arrow-right text-primary me-2"></i>Contact Us</a>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6">
                 <h3 class="text-white mb-4">Get In Touch</h3>
-                <p class="mb-2"><i class="bi bi-geo-alt text-primary me-2"></i>123 Street, New York, USA</p>
-                <p class="mb-2"><i class="bi bi-envelope-open text-primary me-2"></i>info@example.com</p>
-                <p class="mb-0"><i class="bi bi-telephone text-primary me-2"></i>+012 345 67890</p>
+                  <p class="mb-2"><i class="bi bi-geo-alt text-primary me-2"></i>Dublin, Ireland</p>
+                <p class="mb-2"><i class="bi bi-envelope-open text-primary me-2"></i>rsnowden@fletcherchase.com</p>
+                <p class="mb-0"><i class="bi bi-telephone text-primary me-2"></i>+353 861779504</p>
             </div>
             <div class="col-lg-3 col-md-6">
                 <h3 class="text-white mb-4">Follow Us</h3>
                 <div class="d-flex">
                     <a class="btn btn-lg btn-primary btn-lg-square rounded-circle me-2" href="#"><i class="fab fa-twitter fw-normal"></i></a>
                     <a class="btn btn-lg btn-primary btn-lg-square rounded-circle me-2" href="#"><i class="fab fa-facebook-f fw-normal"></i></a>
-                    <a class="btn btn-lg btn-primary btn-lg-square rounded-circle me-2" href="#"><i class="fab fa-linkedin-in fw-normal"></i></a>
+                    <a class="btn btn-lg btn-primary btn-lg-square rounded-circle me-2" href="https://www.linkedin.com/company/fletcherchase/about/"><i class="fab fa-linkedin-in fw-normal"></i></a>
                     <a class="btn btn-lg btn-primary btn-lg-square rounded-circle" href="#"><i class="fab fa-instagram fw-normal"></i></a>
                 </div>
             </div>
         </div>
     </div>
     <div class="container-fluid bg-dark text-secondary text-center border-top py-4 px-5" style="border-color: rgba(256, 256, 256, .1) !important;">
-        <p class="m-0">&copy; <a class="text-secondary border-bottom" href="#">Your Site Name</a>. All Rights Reserved. Designed by <a class="text-secondary border-bottom" href="https://htmlcodex.com">HTML Codex</a></p>
+        <p class="m-0">&copy; <a class="text-secondary border-bottom" href="fletcherchase.com">fletcherchase.com</a>. All Rights Reserved. Designed by <a class="text-secondary border-bottom" href="https://htmlcodex.com">HTML Codex</a></p>
     </div>
     <!-- Footer End -->
 
