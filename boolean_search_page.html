@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Boolean Search Generator - Fletcher Chase Recruitment</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Boolean Search Generator, Recruitment Tools, LinkedIn Search" name="keywords">
+    <meta content="Generate precise Boolean search strings for LinkedIn, GitHub, and other platforms - Fletcher Chase Recruitment Tools" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"> 
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- Custom Boolean Generator Styles -->
+    <style>
+        .boolean-generator {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 2px solid #e9ecef;
+        }
+
+        .search-result-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .search-result-card:hover {
+            border-color: var(--bs-primary);
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.1);
+        }
+
+        .search-header {
+            background: var(--bs-primary);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-content {
+            padding: 20px;
+        }
+
+        .search-string {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            word-wrap: break-word;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+
+        .platform-icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            border-radius: 50%;
+        }
+
+        .linkedin { background: #0077b5; }
+        .github { background: #333; }
+        .reddit { background: #ff4500; }
+        .twitter { background: #1da1f2; }
+        .stackoverflow { background: #f48024; }
+        .web { background: #28a745; }
+        .portfolio { background: #6f42c1; }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .results-section {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .search-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Topbar Start -->
+    <div class="container-fluid bg-secondary ps-5 pe-0 d-none d-lg-block">
+        <div class="row gx-0">
+            <div class="col-md-6 text-center text-lg-start mb-2 mb-lg-0">
+                <div class="d-inline-flex align-items-center">
+                    <a class="text-body py-2 pe-3 border-end" href=""><small>FAQs</small></a>
+                    <a class="text-body py-2 px-3 border-end" href=""><small>Support</small></a>
+                    <a class="text-body py-2 px-3 border-end" href=""><small>Privacy</small></a>
+                    <a class="text-body py-2 px-3 border-end" href=""><small>Policy</small></a>
+                    <a class="text-body py-2 ps-3" href=""><small>Career</small></a>
+                </div>
+            </div>
+            <div class="col-md-6 text-center text-lg-end">
+                <div class="position-relative d-inline-flex align-items-center bg-dark text-white top-shape px-5">
+                    <div class="me-3 pe-3 border-end py-2">
+                        <p class="m-0"><i class="fa fa-envelope-open me-2"></i>rsnowden@fletcherchase.com</p>
+                    </div>
+                    <div class="py-2">
+                        <p class="m-0"><i class="fa fa-phone-alt me-2"></i>+353 861779504</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Topbar End -->
+
+    <!-- Navbar Start -->
+    <nav class="navbar navbar-expand-lg bg-white navbar-light shadow-sm px-5 py-3 py-lg-0">
+        <a href="index.html" class="navbar-brand p-0">
+            <h1 class="m-0 text-uppercase text-primary">Fletcher Chase</h1>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto py-0 me-n3">
+                <a href="index.html" class="nav-item nav-link">Home</a>
+                <a href="about.html" class="nav-item nav-link">About</a>
+                <a href="service.html" class="nav-item nav-link">Service</a>
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="service.html" class="dropdown-item">Our Services</a>
+                        <a href="quote.html" class="dropdown-item">Quote Form</a>
+                        <a href="team.html" class="dropdown-item">The Team</a>
+                        <a href="testimonial.html" class="dropdown-item">Testimonial</a>
+                    </div>
+                </div>
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle active" data-bs-toggle="dropdown">Tools</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="boolean-search-generator.html" class="dropdown-item active">Boolean Search Generator</a>
+                    </div>
+                </div>
+                <a href="contact.html" class="nav-item nav-link">Contact</a>
+            </div>
+        </div>
+    </nav>
+    <!-- Navbar End -->
+
+    <!-- Page Header Start -->
+    <div class="container-fluid bg-dark p-5">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1 class="display-4 text-white">Boolean Search Generator</h1>
+                <a href="index.html">Home</a>
+                <i class="far fa-square text-primary px-2"></i>
+                <a href="boolean-search-generator.html">Boolean Generator</a>
+            </div>
+        </div>
+    </div>
+    <!-- Page Header End -->
+
+    <!-- Boolean Generator Start -->
+    <div class="container-fluid bg-secondary px-0 py-6">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="text-center mb-5">
+                        <h1 class="display-5 mb-4">Generate Precise Boolean Search Strings</h1>
+                        <p class="lead">Create optimized search strings for LinkedIn, GitHub, Reddit, and other platforms to find the perfect candidates.</p>
+                    </div>
+
+                    <div class="boolean-generator">
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <div class="alert alert-info" role="alert">
+                                    <h5 class="alert-heading"><i class="fas fa-info-circle me-2"></i>How It Works</h5>
+                                    <p class="mb-0">Enter a job title, required skills, and location to generate targeted Boolean search strings. The tool automatically creates searches for different platforms with smart location handling for better geographic targeting.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="jobTitle" placeholder="Job Title">
+                                    <label for="jobTitle">Job Title</label>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="location" placeholder="Location">
+                                    <label for="location">Location (e.g., UK, Ireland, Germany)</label>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <textarea class="form-control" id="skills" placeholder="Skills" style="height: 100px"></textarea>
+                                    <label for="skills">Skills (comma-separated)</label>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <textarea class="form-control" id="excludeTerms" placeholder="Exclude Terms" style="height: 80px"></textarea>
+                                    <label for="excludeTerms">Exclude Terms (comma-separated, optional)</label>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <button class="btn btn-primary btn-lg w-100 py-3" onclick="generateSearchStrings()">
+                                    <i class="fas fa-search me-2"></i>Generate Boolean Searches
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="results-section" id="resultsSection">
+                        <div id="searchResults"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Boolean Generator End -->
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-gray text-secondary p-5">
+        <div class="row g-5">
+            <div class="col-12 text-center">
+                <h1 class="display-5 mb-4">Connect With Us</h1>
+                <form action="https://formsubmit.co/rsnowden@fletcherchase.com" method="POST" class="mx-auto" style="max-width: 600px;">
+                    <div class="input-group">
+                        <input type="text" name="Email" class="form-control border-white p-3" placeholder="Your Email" required>
+                        <button class="btn btn-dark px-4">Sign Up</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid bg-dark text-secondary p-5">
+        <div class="row g-5">
+            <div class="col-lg-3 col-md-6">
+                <h3 class="text-white mb-4">Quick Links</h3>
+                <div class="d-flex flex-column justify-content-start">
+                    <a class="text-secondary mb-2" href="index.html"><i class="bi bi-arrow-right text-primary me-2"></i>Home</a>
+                    <a class="text-secondary mb-2" href="about.html"><i class="bi bi-arrow-right text-primary me-2"></i>About Us</a>
+                    <a class="text-secondary mb-2" href="service.html"><i class="bi bi-arrow-right text-primary me-2"></i>Our Services</a>
+                    <a class="text-secondary" href="contact.html"><i class="bi bi-arrow-right text-primary me-2"></i>Contact Us</a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <h3 class="text-white mb-4">Popular Links</h3>
+                <div class="d-flex flex-column justify-content-start">
+                    <a class="text-secondary mb-2" href="index.html"><i class="bi bi-arrow-right text-primary me-2"></i>Home</a>
+                    <a class="text-secondary mb-2" href="about.html"><i class="bi bi-arrow-right text-primary me-2"></i>About Us</a>
+                    <a class="text-secondary mb-2" href="service.html"><i class="bi bi-arrow-right text-primary me-2"></i>Our Services</a>
+                    <a class="text-secondary" href="contact.html"><i class="bi bi-arrow-right text-primary me-2"></i>Contact Us</a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <h3 class="text-white mb-4">Recruitment Tools</h3>
+                <div class="d-flex flex-column justify-content-start">
+                    <a class="text-secondary mb-2" href="boolean-search-generator.html"><i class="bi bi-arrow-right text-primary me-2"></i>Boolean Search Generator</a>
+                    <a class="text-secondary mb-2" href="service.html"><i class="bi bi-arrow-right text-primary me-2"></i>Candidate Sourcing</a>
+                    <a class="text-secondary mb-2" href="service.html"><i class="bi bi-arrow-right text-primary me-2"></i>Executive Search</a>
+                    <a class="text-secondary" href="contact.html"><i class="bi bi-arrow-right text-primary me-2"></i>Custom Solutions</a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <h3 class="text-white mb-4">Get In Touch</h3>
+                <p class="mb-2"><i class="bi bi-geo-alt text-primary me-2"></i>Dublin, Ireland</p>
+                <p class="mb-2"><i class="bi bi-envelope-open text-primary me-2"></i>rsnowden@fletcherchase.com</p>
+                <p class="mb-0"><i class="bi bi-telephone text-primary me-2"></i>+353 861779504</p>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid bg-dark text-secondary text-center border-top py-4 px-5" style="border-color: rgba(256, 256, 256, .1) !important;">
+        <p class="m-0">&copy; <a class="text-secondary border-bottom" href="fletcherchase.com">fletcherchase.com</a>. All Rights Reserved. Designed by <a class="text-secondary border-bottom" href="https://htmlcodex.com">HTML Codex</a></p>
+    </div>
+    <!-- Footer End -->
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle me-2"></i>Search string copied to clipboard!
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="js/main.js"></script>
+
+    <!-- Boolean Search Generator Script -->
+    <script>
+        // Location to LinkedIn domain mapping
+        const locationDomains = {
+            'uk': 'uk.linkedin.com',
+            'united kingdom': 'uk.linkedin.com',
+            'ireland': 'ie.linkedin.com',
+            'ie': 'ie.linkedin.com',
+            'germany': 'de.linkedin.com',
+            'de': 'de.linkedin.com',
+            'france': 'fr.linkedin.com',
+            'fr': 'fr.linkedin.com',
+            'spain': 'es.linkedin.com',
+            'es': 'es.linkedin.com',
+            'italy': 'it.linkedin.com',
+            'it': 'it.linkedin.com',
+            'netherlands': 'nl.linkedin.com',
+            'nl': 'nl.linkedin.com',
+            'canada': 'ca.linkedin.com',
+            'ca': 'ca.linkedin.com',
+            'australia': 'au.linkedin.com',
+            'au': 'au.linkedin.com',
+            'india': 'in.linkedin.com',
+            'in': 'in.linkedin.com'
+        };
+
+        function getLinkedInDomain(location) {
+            const locationLower = location.toLowerCase().trim();
+            return locationDomains[locationLower] || 'linkedin.com';
+        }
+
+        function formatSkills(skillsText) {
+            return skillsText.split(',')
+                .map(skill => skill.trim())
+                .filter(skill => skill.length > 0)
+                .map(skill => `"${skill}"`)
+                .join(' OR ');
+        }
+
+        function formatExcludeTerms(excludeText) {
+            if (!excludeText.trim()) return '';
+            
+            return excludeText.split(',')
+                .map(term => term.trim())
+                .filter(term => term.length > 0)
+                .map(term => `-"${term}"`)
+                .join(' ');
+        }
+
+        function generateSearchStrings() {
+            const jobTitle = document.getElementById('jobTitle').value.trim();
+            const skills = document.getElementById('skills').value.trim();
+            const location = document.getElementById('location').value.trim();
+            const excludeTerms = document.getElementById('excludeTerms').value.trim();
+
+            if (!jobTitle || !skills || !location) {
+                alert('Please fill in Job Title, Skills, and Location fields');
+                return;
+            }
+
+            const formattedSkills = formatSkills(skills);
+            const linkedinDomain = getLinkedInDomain(location);
+            const formattedExcludes = formatExcludeTerms(excludeTerms);
+            
+            // Build location search term
+            const locationSearch = location.toLowerCase().includes('uk') || location.toLowerCase().includes('united kingdom') ? 
+                '("UK" OR "United Kingdom" OR "England" OR "Scotland" OR "Wales")' : 
+                `"${location}"`;
+            
+            const searches = [
+                {
+                    platform: 'LinkedIn (Global)',
+                    icon: 'linkedin',
+                    query: `site:linkedin.com/in "${jobTitle}" (${formattedSkills}) ${locationSearch} ${formattedExcludes}`.trim()
+                },
+                {
+                    platform: `LinkedIn (${location} Specific Domain)`,
+                    icon: 'linkedin',
+                    query: `site:${linkedinDomain}/in "${jobTitle}" (${formattedSkills}) ${formattedExcludes}`.trim()
+                },
+                {
+                    platform: 'LinkedIn + Email Hunt',
+                    icon: 'linkedin',
+                    query: `site:linkedin.com/in "${jobTitle}" (${formattedSkills}) ${locationSearch} (email OR contact OR gmail OR outlook) ${formattedExcludes}`.trim()
+                },
+                {
+                    platform: 'GitHub Profiles',
+                    icon: 'github',
+                    query: `site:github.com "${jobTitle}" (${formattedSkills}) location:"${location}" ${formattedExcludes}`.trim()
+                },
+                {
+                    platform: 'GitHub + Email',
+                    icon: 'github',
+                    query: `site:github.com (${formattedSkills}) (@gmail.com OR @outlook.com OR @yahoo.com OR email) "${location}" ${formattedExcludes}`.trim()
+                },
+                {
+                    platform: 'Stack Overflow Profiles',
+                    icon: 'stackoverflow',
+                    query: `site:stackoverflow.com/users "${jobTitle}" (${formattedSkills}) "${location}" ${formattedExcludes}`.trim()
+                },
+                {
+                    platform: 'Reddit Discussions',
+                    icon: 'reddit',
+                    query: `site:reddit.com "${jobTitle}" (${formattedSkills}) "${location}" ${formattedExcludes}`.trim()
+                },
+                {
+                    platform: 'Twitter/X Profiles',
+                    icon: 'twitter',
+                    query: `(site:twitter.com OR site:x.com) "${jobTitle}" (${formattedSkills}) "${location}" ${formattedExcludes}`.trim()
+                },
+                {
+                    platform: 'Personal Websites + Email',
+                    icon: 'web',
+                    query: `"${jobTitle}" (${formattedSkills}) "${location}" (@gmail.com OR @outlook.com OR contact OR email OR hire) ${formattedExcludes} -site:linkedin.com -site:indeed.com -site:glassdoor.com`.trim()
+                },
+                {
+                    platform: 'Portfolio/CV Sites',
+                    icon: 'portfolio',
+                    query: `"${jobTitle}" (${formattedSkills}) "${location}" (portfolio OR CV OR resume OR "about me") ${formattedExcludes} -site:linkedin.com`.trim()
+                }
+            ];
+
+            displayResults(searches);
+        }
+
+        function displayResults(searches) {
+            const resultsSection = document.getElementById('resultsSection');
+            const searchResults = document.getElementById('searchResults');
+            
+            let resultsHTML = '<div class="row g-4">';
+            
+            searches.forEach((search, index) => {
+                resultsHTML += `
+                    <div class="col-12">
+                        <div class="search-result-card">
+                            <div class="search-header">
+                                <h5 class="mb-0">
+                                    <span class="platform-icon ${search.icon}"></span>
+                                    ${search.platform}
+                                </h5>
+                                <button class="copy-btn" onclick="copyToClipboard('${search.query.replace(/'/g, "\\'")}', this)">
+                                    <i class="fas fa-copy me-1"></i> Copy
+                                </button>
+                            </div>
+                            <div class="search-content">
+                                <div class="search-string">${search.query}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            resultsHTML += '</div>';
+            searchResults.innerHTML = resultsHTML;
+            resultsSection.style.display = 'block';
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function copyToClipboard(text, button) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast();
+                button.innerHTML = '<i class="fas fa-check me-1"></i> Copied!';
+                setTimeout(() => {
+                    button.innerHTML = '<i class="fas fa-copy me-1"></i> Copy';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showToast();
+                button.innerHTML = '<i class="fas fa-check me-1"></i> Copied!';
+                setTimeout(() => {
+                    button.innerHTML = '<i class="fas fa-copy me-1"></i> Copy';
+                }, 2000);
+            });
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Allow Enter key to generate searches
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && (e.target.id === 'jobTitle' || e.target.id === 'skills' || e.target.id === 'location' || e.target.id === 'excludeTerms')) {
+                generateSearchStrings();
+            }
+        });
+
+        // Auto-resize textareas
+        document.getElementById('skills').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+
+        document.getElementById('excludeTerms').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+    </script>
+</body>
+
+</html>
