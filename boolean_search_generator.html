@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boolean Search Generator - Recruiter Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .input-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 2px solid #e9ecef;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .input-group input:focus, .input-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .generate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .results-section {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .search-result {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .search-result:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-header {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-header h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .search-content {
+            padding: 20px;
+        }
+
+        .search-string {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            word-wrap: break-word;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .platform-icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            border-radius: 50%;
+        }
+
+        .linkedin { background: #0077b5; }
+        .github { background: #333; }
+        .reddit { background: #ff4500; }
+        .twitter { background: #1da1f2; }
+        .stackoverflow { background: #f48024; }
+        .web { background: #28a745; }
+        .portfolio { background: #6f42c1; }
+
+        .info-box {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-left: 4px solid #2196f3;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+        }
+
+        .info-box h3 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4caf50;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .search-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Boolean Search Generator</h1>
+            <p>Generate precise Boolean search strings for LinkedIn, GitHub, Reddit, and Twitter</p>
+        </div>
+        
+        <div class="content">
+            <div class="info-box">
+                <h3>🧩 How It Works</h3>
+                <p>Enter a job title, skills, and location to generate optimized Boolean search strings. The tool automatically creates targeted searches for different platforms with smart location handling for better geographic targeting.</p>
+            </div>
+
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="jobTitle">Job Title</label>
+                    <input type="text" id="jobTitle" placeholder="e.g., Software Engineer, Data Scientist, Product Manager">
+                </div>
+                
+                <div class="input-group">
+                    <label for="skills">Skills (comma-separated)</label>
+                    <textarea id="skills" placeholder="e.g., JavaScript, React, Node.js, Python, Machine Learning"></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" placeholder="e.g., UK, Ireland, United States, Germany">
+                </div>
+                
+                <div class="input-group">
+                    <label for="excludeTerms">Exclude Terms (comma-separated)</label>
+                    <textarea id="excludeTerms" placeholder="e.g., intern, junior, graduate, student"></textarea>
+                </div>
+                
+                <button class="generate-btn" onclick="generateSearchStrings()">
+                    Generate Boolean Searches
+                </button>
+            </div>
+
+            <div class="results-section" id="resultsSection">
+                <div id="searchResults"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">
+        Search string copied to clipboard!
+    </div>
+
+    <script>
+        // Location to LinkedIn domain mapping
+        const locationDomains = {
+            'uk': 'uk.linkedin.com',
+            'united kingdom': 'uk.linkedin.com',
+            'ireland': 'ie.linkedin.com',
+            'ie': 'ie.linkedin.com',
+            'germany': 'de.linkedin.com',
+            'de': 'de.linkedin.com',
+            'france': 'fr.linkedin.com',
+            'fr': 'fr.linkedin.com',
+            'spain': 'es.linkedin.com',
+            'es': 'es.linkedin.com',
+            'italy': 'it.linkedin.com',
+            'it': 'it.linkedin.com',
+            'netherlands': 'nl.linkedin.com',
+            'nl': 'nl.linkedin.com',
+            'canada': 'ca.linkedin.com',
+            'ca': 'ca.linkedin.com',
+            'australia': 'au.linkedin.com',
+            'au': 'au.linkedin.com',
+            'india': 'in.linkedin.com',
+            'in': 'in.linkedin.com'
+        };
+
+        function getLinkedInDomain(location) {
+            const locationLower = location.toLowerCase().trim();
+            return locationDomains[locationLower] || 'linkedin.com';
+        }
+
+        function formatSkills(skillsText) {
+            return skillsText.split(',')
+                .map(skill => skill.trim())
+                .filter(skill => skill.length > 0)
+                .map(skill => `"${skill}"`)
+                .join(' OR ');
+        }
+
+        function formatExcludeTerms(excludeText) {
+            if (!excludeText.trim()) return '';
+            
+            return excludeText.split(',')
+                .map(term => term.trim())
+                .filter(term => term.length > 0)
+                .map(term => `-"${term}"`)
+                .join(' ');
+        }
+
+        function generateSearchStrings() {
+            const jobTitle = document.getElementById('jobTitle').value.trim();
+            const skills = document.getElementById('skills').value.trim();
+            const location = document.getElementById('location').value.trim();
+            const excludeTerms = document.getElementById('excludeTerms').value.trim();
+
+            if (!jobTitle || !skills || !location) {
+                alert('Please fill in Job Title, Skills, and Location fields');
+                return;
+            }
+
+            const formattedSkills = formatSkills(skills);
+            const linkedinDomain = getLinkedInDomain(location);
+            const formattedExcludes = formatExcludeTerms(excludeTerms);
+            
+            // Build location search term
+            const locationSearch = location.toLowerCase().includes('uk') || location.toLowerCase().includes('united kingdom') ? 
+                '("UK" OR "United Kingdom" OR "England" OR "Scotland" OR "Wales")' : 
+                `"${location}"`;
+            
+            const searches = [
+                {
+                    platform: 'LinkedIn (Global)',
+                    icon: 'linkedin',
+                    query: `site:linkedin.com/in "${jobTitle}" (${formattedSkills}) ${locationSearch} ${formattedExcludes}`.trim()
+                },
+                {
+                    platform: `LinkedIn (${location} Specific Domain)`,
+                    icon: 'linkedin',
+                    query: `site:${linkedinDomain}/in "${jobTitle}" (${formattedSkills}) ${formattedExcludes}`.trim()
+                },
+                {
+                    platform: 'LinkedIn + Email Hunt',
+                    icon: 'linkedin',
+                    query: `site:linkedin.com/in "${jobTitle}" (${formattedSkills}) ${locationSearch} (email OR contact OR gmail OR outlook) ${formattedExcludes}`.trim()
+                },
+                {
+                    platform: 'GitHub Profiles',
+                    icon: 'github',
+                    query: `site:github.com "${jobTitle}" (${formattedSkills}) location:"${location}" ${formattedExcludes}`.trim()
+                },
+                {
+                    platform: 'GitHub + Email',
+                    icon: 'github',
+                    query: `site:github.com (${formattedSkills}) (@gmail.com OR @outlook.com OR @yahoo.com OR email) "${location}" ${formattedExcludes}`.trim()
+                },
+                {
+                    platform: 'Stack Overflow Profiles',
+                    icon: 'stackoverflow',
+                    query: `site:stackoverflow.com/users "${jobTitle}" (${formattedSkills}) "${location}" ${formattedExcludes}`.trim()
+                },
+                {
+                    platform: 'Reddit Discussions',
+                    icon: 'reddit',
+                    query: `site:reddit.com "${jobTitle}" (${formattedSkills}) "${location}" ${formattedExcludes}`.trim()
+                },
+                {
+                    platform: 'Twitter/X Profiles',
+                    icon: 'twitter',
+                    query: `(site:twitter.com OR site:x.com) "${jobTitle}" (${formattedSkills}) "${location}" ${formattedExcludes}`.trim()
+                },
+                {
+                    platform: 'Personal Websites + Email',
+                    icon: 'web',
+                    query: `"${jobTitle}" (${formattedSkills}) "${location}" (@gmail.com OR @outlook.com OR contact OR email OR hire) ${formattedExcludes} -site:linkedin.com -site:indeed.com -site:glassdoor.com`.trim()
+                },
+                {
+                    platform: 'Portfolio/CV Sites',
+                    icon: 'portfolio',
+                    query: `"${jobTitle}" (${formattedSkills}) "${location}" (portfolio OR CV OR resume OR "about me") ${formattedExcludes} -site:linkedin.com`.trim()
+                }
+            ];
+
+            displayResults(searches);
+        }
+
+        function displayResults(searches) {
+            const resultsSection = document.getElementById('resultsSection');
+            const searchResults = document.getElementById('searchResults');
+            
+            let resultsHTML = '';
+            
+            searches.forEach((search, index) => {
+                resultsHTML += `
+                    <div class="search-result">
+                        <div class="search-header">
+                            <h3>
+                                <span class="platform-icon ${search.icon}"></span>
+                                ${search.platform}
+                            </h3>
+                            <button class="copy-btn" onclick="copyToClipboard('${search.query.replace(/'/g, "\\'")}', this)">
+                                📋 Copy
+                            </button>
+                        </div>
+                        <div class="search-content">
+                            <div class="search-string">${search.query}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            searchResults.innerHTML = resultsHTML;
+            resultsSection.style.display = 'block';
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function copyToClipboard(text, button) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast();
+                button.textContent = '✅ Copied!';
+                setTimeout(() => {
+                    button.textContent = '📋 Copy';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showToast();
+                button.textContent = '✅ Copied!';
+                setTimeout(() => {
+                    button.textContent = '📋 Copy';
+                }, 2000);
+            });
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Allow Enter key to generate searches
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && (e.target.id === 'jobTitle' || e.target.id === 'skills' || e.target.id === 'location' || e.target.id === 'excludeTerms')) {
+                generateSearchStrings();
+            }
+        });
+
+        // Auto-resize textarea
+        document.getElementById('skills').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+
+        document.getElementById('excludeTerms').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+    </script>
+</body>
+</html>
