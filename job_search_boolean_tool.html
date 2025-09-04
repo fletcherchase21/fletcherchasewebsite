@@ -5,45 +5,233 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hidden Jobs Boolean Search Generator</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh; padding: 20px;
+            min-height: 100vh;
+            padding: 20px;
         }
-        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
-        .header { background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%); color: white; padding: 40px 30px; text-align: center; }
-        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
-        .header p { font-size: 1.1em; opacity: 0.9; }
-        .main-content { padding: 40px 30px; }
-        .input-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-bottom: 30px; }
-        .input-group { display: flex; flex-direction: column; }
-        label { font-weight: 600; color: #2c3e50; margin-bottom: 8px; font-size: 1.1em; }
-        input, select, textarea { padding: 12px 15px; border: 2px solid #e0e6ed; border-radius: 10px; font-size: 1em; transition: all 0.3s ease; background: #f8f9fa; }
-        input:focus, select:focus, textarea:focus { outline: none; border-color: #3498db; box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1); background: white; }
-        textarea { resize: vertical; min-height: 80px; }
-        .generate-btn { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; border: none; padding: 15px 30px; font-size: 1.2em; font-weight: 600; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; display: block; margin: 30px auto; min-width: 200px; }
-        .generate-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(231, 76, 60, 0.3); }
-        .results-section { margin-top: 30px; }
-        .search-result { margin-bottom: 25px; background: #f8f9fa; border-radius: 15px; overflow: hidden; border: 1px solid #e0e6ed; transition: all 0.3s ease; }
-        .search-result:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .result-header { background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%); color: white; padding: 15px 20px; font-weight: 600; font-size: 1.1em; }
-        .result-content { padding: 20px; }
-        .search-string { background: white; border: 2px solid #3498db; border-radius: 10px; padding: 15px; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 0.9em; word-break: break-all; margin-bottom: 15px; position: relative; }
-        .copy-btn { background: #27ae60; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 0.9em; transition: all 0.3s ease; position: absolute; top: 10px; right: 10px; }
-        .copy-btn:hover { background: #229954; }
-        .search-link { display: inline-block; background: #3498db; color: white; padding: 10px 20px; text-decoration: none; border-radius: 8px; margin-right: 10px; margin-bottom: 10px; transition: all 0.3s ease; }
-        .search-link:hover { background: #2980b9; transform: translateY(-2px); }
-        .tips-section { background: linear-gradient(135deg, #f39c12 0%, #d68910 100%); color: white; padding: 30px; margin-top: 30px; border-radius: 15px; }
-        .tips-section h3 { font-size: 1.5em; margin-bottom: 15px; }
-        .tips-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
-        .tip-card { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; backdrop-filter: blur(10px); }
-        .tip-card h4 { font-size: 1.2em; margin-bottom: 10px; }
-        .hidden { display: none; }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 40px 30px;
+        }
+
+        .input-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        input, select, textarea {
+            padding: 12px 15px;
+            border: 2px solid #e0e6ed;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+            background: white;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .generate-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto;
+            min-width: 200px;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(231, 76, 60, 0.3);
+        }
+
+        .results-section {
+            margin-top: 30px;
+        }
+
+        .search-result {
+            margin-bottom: 25px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid #e0e6ed;
+            transition: all 0.3s ease;
+        }
+
+        .search-result:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .result-header {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            color: white;
+            padding: 15px 20px;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .result-content {
+            padding: 20px;
+        }
+
+        .search-string {
+            background: white;
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            padding: 15px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+            word-break: break-all;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .copy-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .copy-btn:hover {
+            background: #229954;
+        }
+
+        .search-link {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .search-link:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .tips-section {
+            background: linear-gradient(135deg, #f39c12 0%, #d68910 100%);
+            color: white;
+            padding: 30px;
+            margin-top: 30px;
+            border-radius: 15px;
+        }
+
+        .tips-section h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .tip-card {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .tip-card h4 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
         @media (max-width: 768px) {
-            .header h1 { font-size: 2em; }
-            .input-section { grid-template-columns: 1fr; }
-            .main-content { padding: 20px 15px; }
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .input-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-content {
+                padding: 20px 15px;
+            }
         }
     </style>
 </head>
@@ -53,24 +241,29 @@
             <h1>🕵️ Hidden Jobs Boolean Search Generator</h1>
             <p>Find unadvertised opportunities and identify companies that might need recruitment support</p>
         </div>
+
         <div class="main-content">
             <div class="input-section">
                 <div class="input-group">
                     <label for="jobTitle">Job Title / Role</label>
                     <input type="text" id="jobTitle" placeholder="e.g., Software Engineer, Marketing Manager" />
                 </div>
+
                 <div class="input-group">
                     <label for="skills">Key Skills (comma-separated)</label>
                     <textarea id="skills" placeholder="e.g., Python, React, AWS, Digital Marketing"></textarea>
                 </div>
+
                 <div class="input-group">
                     <label for="location">Location</label>
                     <input type="text" id="location" placeholder="e.g., Dublin, Ireland" />
                 </div>
+
                 <div class="input-group">
                     <label for="industry">Industry/Sector</label>
                     <input type="text" id="industry" placeholder="e.g., Fintech, Healthcare, Startups" />
                 </div>
+
                 <div class="input-group">
                     <label for="companySize">Company Size</label>
                     <select id="companySize">
@@ -81,6 +274,7 @@
                         <option value="large">Large (1000+)</option>
                     </select>
                 </div>
+
                 <div class="input-group">
                     <label for="searchType">Search Focus</label>
                     <select id="searchType">
@@ -90,19 +284,39 @@
                     </select>
                 </div>
             </div>
-            <button class="generate-btn" onclick="generateSearches()">🔍 Generate Hidden Job Searches</button>
-            <div id="results" class="results-section hidden"></div>
+
+            <button class="generate-btn" onclick="generateSearches()">
+                🔍 Generate Hidden Job Searches
+            </button>
+
+            <div id="results" class="results-section hidden">
+                <!-- Results will be generated here -->
+            </div>
+
             <div class="tips-section">
                 <h3>💡 Pro Tips for Finding Hidden Jobs</h3>
                 <div class="tips-grid">
-                    <div class="tip-card"><h4>🎯 For Job Seekers</h4><p>Look for "we're hiring" posts on company blogs, team expansion announcements, and funding news that indicates growth.</p></div>
-                    <div class="tip-card"><h4>🤝 For Recruiters</h4><p>Find companies posting job-related content without formal job ads - they may need recruitment support.</p></div>
-                    <div class="tip-card"><h4>⏰ Timing Matters</h4><p>Search for recent content (past month) for the freshest opportunities and leads.</p></div>
-                    <div class="tip-card"><h4>🌐 Multiple Platforms</h4><p>Use different search engines and platforms - each may reveal unique opportunities.</p></div>
+                    <div class="tip-card">
+                        <h4>🎯 For Job Seekers</h4>
+                        <p>Look for "we're hiring" posts on company blogs, team expansion announcements, and funding news that indicates growth.</p>
+                    </div>
+                    <div class="tip-card">
+                        <h4>🤝 For Recruiters</h4>
+                        <p>Find companies posting job-related content without formal job ads - they may need recruitment support.</p>
+                    </div>
+                    <div class="tip-card">
+                        <h4>⏰ Timing Matters</h4>
+                        <p>Search for recent content (past month) for the freshest opportunities and leads.</p>
+                    </div>
+                    <div class="tip-card">
+                        <h4>🌐 Multiple Platforms</h4>
+                        <p>Use different search engines and platforms - each may reveal unique opportunities.</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
     <script>
         function generateSearches() {
             const jobTitle = document.getElementById('jobTitle').value.trim();
@@ -121,7 +335,9 @@
             resultsDiv.innerHTML = '';
             resultsDiv.classList.remove('hidden');
 
+            // Generate different types of searches
             const searches = generateHiddenJobSearches(jobTitle, skills, location, industry, companySize, searchType);
+            
             searches.forEach(search => {
                 const resultDiv = createSearchResult(search);
                 resultsDiv.appendChild(resultDiv);
@@ -131,84 +347,293 @@
         function generateHiddenJobSearches(jobTitle, skills, location, industry, companySize, searchType) {
             const searches = [];
             const skillsArray = skills ? skills.split(',').map(s => s.trim()) : [];
-
+            
+            // Google Search for Company Career Pages
             if (searchType !== 'recruiter') {
-                searches.push({ title: '🌐 Company Career Pages & Hidden Listings', query: buildCareerPageQuery(jobTitle, skillsArray, location, industry), platform: 'Google', description: 'Find jobs posted directly on company websites, bypassing job boards' });
+                searches.push({
+                    title: '🌐 Company Career Pages & Hidden Listings',
+                    query: buildCareerPageQuery(jobTitle, skillsArray, location, industry),
+                    platform: 'Google',
+                    description: 'Find jobs posted directly on company websites, bypassing job boards'
+                });
             }
 
-            searches.push({ title: '📢 LinkedIn Hiring Signals', query: buildLinkedInHiringQuery(jobTitle, skillsArray, location, industry), platform: 'Google (LinkedIn)', description: searchType === 'recruiter' ? 'Companies posting about hiring needs - recruitment opportunities' : 'Companies announcing hiring plans' });
+            // LinkedIn Posts for Hiring Signals
+            searches.push({
+                title: '📢 LinkedIn Hiring Signals',
+                query: buildLinkedInHiringQuery(jobTitle, skillsArray, location, industry),
+                platform: 'Google (LinkedIn)',
+                description: searchType === 'recruiter' ? 'Companies posting about hiring needs - recruitment opportunities' : 'Companies announcing hiring plans'
+            });
 
-            searches.push({ title: '🐦 Social Media Hiring Posts', query: buildSocialMediaQuery(jobTitle, skillsArray, location, industry), platform: 'Google (Social Media)', description: 'Informal hiring announcements on social media' });
+            // Twitter/X Hiring Posts
+            searches.push({
+                title: '🐦 Social Media Hiring Posts',
+                query: buildSocialMediaQuery(jobTitle, skillsArray, location, industry),
+                platform: 'Google (Twitter/X)',
+                description: 'Informal hiring announcements on social media'
+            });
 
+            // Company Blogs & News
             if (searchType !== 'recruiter') {
-                searches.push({ title: '📰 Company Growth & Expansion News', query: buildGrowthNewsQuery(jobTitle, skillsArray, location, industry), platform: 'Google', description: 'Companies announcing growth, funding, or expansion - often hiring soon' });
+                searches.push({
+                    title: '📰 Company Growth & Expansion News',
+                    query: buildGrowthNewsQuery(jobTitle, skillsArray, location, industry),
+                    platform: 'Google',
+                    description: 'Companies announcing growth, funding, or expansion - often hiring soon'
+                });
             }
 
+            // GitHub Repository Hiring
             if (jobTitle.toLowerCase().includes('engineer') || jobTitle.toLowerCase().includes('developer') || skillsArray.some(s => ['python', 'javascript', 'react', 'node', 'java', 'c++'].includes(s.toLowerCase()))) {
-                searches.push({ title: '💻 GitHub Repository Hiring', query: buildGitHubHiringQuery(jobTitle, skillsArray, location), platform: 'Google (GitHub)', description: 'Open source projects and companies hiring through GitHub' });
+                searches.push({
+                    title: '💻 GitHub Repository Hiring',
+                    query: buildGitHubHiringQuery(jobTitle, skillsArray, location),
+                    platform: 'Google (GitHub)',
+                    description: 'Open source projects and companies hiring through GitHub'
+                });
             }
 
+            // Recruiter-specific: Companies needing help
             if (searchType === 'recruiter' || searchType === 'both') {
-                searches.push({ title: '🎯 Companies Struggling to Hire', query: buildRecruiterOpportunityQuery(jobTitle, skillsArray, location, industry), platform: 'Google', description: 'Companies expressing hiring difficulties - recruitment service opportunities' });
+                searches.push({
+                    title: '🎯 Companies Struggling to Hire',
+                    query: buildRecruiterOpportunityQuery(jobTitle, skillsArray, location, industry),
+                    platform: 'Google',
+                    description: 'Companies expressing hiring difficulties - recruitment service opportunities'
+                });
             }
 
-            searches.push({ title: '🚀 Startup & Scale-up Opportunities', query: buildStartupQuery(jobTitle, skillsArray, location, industry), platform: 'Google', description: 'Fast-growing companies often hiring informally' });
+            // Startup/Scale-up Focus
+            searches.push({
+                title: '🚀 Startup & Scale-up Opportunities',
+                query: buildStartupQuery(jobTitle, skillsArray, location, industry),
+                platform: 'Google',
+                description: 'Fast-growing companies often hiring informally'
+            });
 
             return searches;
         }
 
-        function getJobBoardExclusions() {
-            const jobBoardDomains = [
-                'linkedin','indeed','glassdoor','monster','ziprecruiter','careerbuilder','dice','simplyhired','totaljobs','reed','cv-library','jobsite','jobserve','jobcentreplus','gradcracker','milkround','irishjobs','recruitireland','jobrapido','stepstone','xing','jobscout24','jobbank','workopolis','eluta','usajobs','craigslist','flexjobs','upwork','freelancer','guru','adzuna','jooble','jobsearch','neuvoo','trovit','careerjet','cwjobs'
-            ];
-            const extensions = ['.com','.co.uk','.ie','.de','.fr','.ca','.au','.in','.sg','.nl','.be','.it','.es','.ch'];
-            let exclusions = [];
-            jobBoardDomains.forEach(domain => { extensions.forEach(ext => { exclusions.push(`${domain}${ext}`); }); });
-            exclusions.push('*jobs.*','*job.*');
-            return ' AND ' + exclusions.map(site => `-site:${site}`).join(' AND ');
-        }
-
         function buildCareerPageQuery(jobTitle, skills, location, industry) {
             let query = '';
-            if (jobTitle) query += `"${jobTitle}"`;
-            if (skills.length > 0) { const skillTerms = skills.slice(0, 3).map(skill => `"${skill}"`).join(' OR '); query += query ? ` AND (${skillTerms})` : `(${skillTerms})`; }
+            
+            if (jobTitle) {
+                query += `"${jobTitle}"`;
+            }
+            
+            if (skills.length > 0) {
+                const skillTerms = skills.slice(0, 3).map(skill => `"${skill}"`).join(' OR ');
+                query += query ? ` AND (${skillTerms})` : `(${skillTerms})`;
+            }
+            
             query += ' AND (site:careers.* OR site:jobs.* OR inurl:careers OR inurl:jobs)';
-            if (location) query += ` AND "${location}"`;
-            if (industry) query += ` AND "${industry}"`;
-            query += getJobBoardExclusions();
+            query += ' AND -site:linkedin.com -site:indeed.com -site:glassdoor.com -site:monster.com';
+            
+            if (location) {
+                query += ` AND "${location}"`;
+            }
+            
+            if (industry) {
+                query += ` AND "${industry}"`;
+            }
+            
             return query;
+        }
+
+        function getJobBoardExclusions() {
+            // Comprehensive exclusions for job boards with all major country extensions
+            const jobBoardDomains = [
+                'linkedin', 'indeed', 'glassdoor', 'monster', 'ziprecruiter', 'careerbuilder', 
+                'dice', 'simplyhired', 'totaljobs', 'reed', 'cv-library', 'jobsite', 
+                'jobserve', 'jobcentreplus', 'gradcracker', 'milkround', 'irishjobs', 
+                'recruitireland', 'jobrapido', 'stepstone', 'xing', 'jobscout24', 
+                'jobbank', 'workopolis', 'eluta', 'usajobs', 'craigslist', 'flexjobs', 
+                'upwork', 'freelancer', 'guru', 'adzuna', 'jooble', 'jobsearch', 
+                'neuvoo', 'trovit', 'careerjet'
+            ];
+            
+            const extensions = ['.com', '.co.uk', '.ie', '.de', '.fr', '.ca', '.au', '.in', '.sg', '.nl', '.be', '.it', '.es', '.ch'];
+            
+            let exclusions = [];
+            
+            // Add specific domain + extension combinations
+            jobBoardDomains.forEach(domain => {
+                extensions.forEach(ext => {
+                    exclusions.push(`${domain}${ext}`);
+                });
+            });
+            
+            // Add generic patterns for any domain with 'jobs' or 'job'
+            exclusions.push('*jobs.*', '*job.*');
+            
+            return ' AND ' + exclusions.map(site => `-site:${site}`).join(' AND ');
         }
 
         function buildLinkedInHiringQuery(jobTitle, skills, location, industry) {
             let query = 'site:linkedin.com/posts OR site:linkedin.com/pulse';
-            query += jobTitle ? ` AND ("hiring" OR "looking for" OR "join our team") AND "${jobTitle}"` : ` AND ("hiring" OR "looking for" OR "join our team")`;
-            if (skills.length > 0) { const skillTerms = skills.slice(0, 2).map(skill => `"${skill}"`).join(' OR '); query += ` AND (${skillTerms})`; }
-            if (location) query += ` AND "${location}"`;
-            if (industry) query += ` AND "${industry}"`;
-            query += getJobBoardExclusions();
+            
+            if (jobTitle) {
+                query += ` AND ("hiring" OR "looking for" OR "join our team") AND "${jobTitle}"`;
+            } else {
+                query += ` AND ("hiring" OR "looking for" OR "join our team")`;
+            }
+            
+            if (skills.length > 0) {
+                const skillTerms = skills.slice(0, 2).map(skill => `"${skill}"`).join(' OR ');
+                query += ` AND (${skillTerms})`;
+            }
+            
+            if (location) {
+                query += ` AND "${location}"`;
+            }
+            
+            if (industry) {
+                query += ` AND "${industry}"`;
+            }
+            
             return query;
         }
 
         function buildSocialMediaQuery(jobTitle, skills, location, industry) {
-            let query = '(site:twitter.com OR site:x.com OR site:facebook.com OR site:reddit.com OR site:bsky.app OR site:instagram.com OR site:tiktok.com)';
-            query += jobTitle ? ` AND ("we're hiring" OR "now hiring" OR "join us") AND "${jobTitle}"` : ` AND ("we're hiring" OR "now hiring" OR "join us")`;
-            if (skills.length > 0) { const skillTerms = skills.slice(0, 2).map(skill => `"${skill}"`).join(' OR '); query += ` AND (${skillTerms})`; }
-            if (location) query += ` AND "${location}"`;
-            if (industry) query += ` AND "${industry}"`;
-            query += getJobBoardExclusions();
+            let query = '(site:twitter.com OR site:x.com)';
+            
+            if (jobTitle) {
+                query += ` AND ("we're hiring" OR "now hiring" OR "join us") AND "${jobTitle}"`;
+            } else {
+                query += ` AND ("we're hiring" OR "now hiring" OR "join us")`;
+            }
+            
+            if (skills.length > 0) {
+                const skillTerms = skills.slice(0, 2).map(skill => `"${skill}"`).join(' OR ');
+                query += ` AND (${skillTerms})`;
+            }
+            
+            if (location) {
+                query += ` AND "${location}"`;
+            }
+            
             return query;
         }
 
         function buildGrowthNewsQuery(jobTitle, skills, location, industry) {
             let query = '("funding" OR "investment" OR "Series A" OR "Series B" OR "expansion" OR "growing team")';
-            if (jobTitle) query += ` AND "${jobTitle}"`;
-            if (industry) query += ` AND "${industry}"`;
-            if (location) query += ` AND "${location}"`;
-            query += getJobBoardExclusions();
+            
+            if (jobTitle) {
+                query += ` AND "${jobTitle}"`;
+            }
+            
+            if (industry) {
+                query += ` AND "${industry}"`;
+            }
+            
+            if (location) {
+                query += ` AND "${location}"`;
+            }
+            
+            query += ' AND -site:linkedin.com -site:indeed.com';
+            
             return query;
         }
 
         function buildGitHubHiringQuery(jobTitle, skills, location) {
             let query = 'site:github.com';
+            
             query += ' AND ("hiring" OR "jobs" OR "careers" OR "join our team")';
-            if (skills.length > 0) { const skillTerms = skills.slice(0, 2).join(' OR '); query += ` AND (${skillTerms})`; }
+            
+            if (skills.length > 0) {
+                const skillTerms = skills.slice(0, 2).join(' OR ');
+                query += ` AND (${skillTerms})`;
+            }
+            
+            if (location) {
+                query += ` AND "${location}"`;
+            }
+            
+            return query;
+        }
+
+        function buildRecruiterOpportunityQuery(jobTitle, skills, location, industry) {
+            let query = '("struggling to hire" OR "difficult to find" OR "talent shortage" OR "recruitment challenge")';
+            
+            if (jobTitle) {
+                query += ` AND "${jobTitle}"`;
+            }
+            
+            if (industry) {
+                query += ` AND "${industry}"`;
+            }
+            
+            if (location) {
+                query += ` AND "${location}"`;
+            }
+            
+            return query;
+        }
+
+        function buildStartupQuery(jobTitle, skills, location, industry) {
+            let query = '("startup" OR "scale-up" OR "early stage" OR "seed funded")';
+            
+            if (jobTitle) {
+                query += ` AND ("hiring" OR "team") AND "${jobTitle}"`;
+            } else {
+                query += ` AND ("hiring" OR "team")`;
+            }
+            
+            if (location) {
+                query += ` AND "${location}"`;
+            }
+            
+            if (industry) {
+                query += ` AND "${industry}"`;
+            }
+            
+            return query;
+        }
+
+        function createSearchResult(search) {
+            const div = document.createElement('div');
+            div.className = 'search-result';
+            
+            const encodedQuery = encodeURIComponent(search.query);
+            const googleUrl = `https://www.google.com/search?q=${encodedQuery}`;
+            const duckUrl = `https://duckduckgo.com/?q=${encodedQuery}`;
+            const bingUrl = `https://www.bing.com/search?q=${encodedQuery}`;
+            
+            div.innerHTML = `
+                <div class="result-header">
+                    ${search.title}
+                </div>
+                <div class="result-content">
+                    <p><strong>Description:</strong> ${search.description}</p>
+                    <div class="search-string">
+                        ${search.query}
+                        <button class="copy-btn" onclick="copyToClipboard('${search.query.replace(/'/g, "\\'")}')">Copy</button>
+                    </div>
+                    <div>
+                        <a href="${googleUrl}" target="_blank" class="search-link">🔍 Search Google</a>
+                        <a href="${duckUrl}" target="_blank" class="search-link">🦆 Search DuckDuckGo</a>
+                        <a href="${bingUrl}" target="_blank" class="search-link">🔍 Search Bing</a>
+                    </div>
+                </div>
+            `;
+            
+            return div;
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Visual feedback
+                event.target.textContent = 'Copied!';
+                event.target.style.background = '#27ae60';
+                setTimeout(() => {
+                    event.target.textContent = 'Copy';
+                    event.target.style.background = '#27ae60';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+    </script>
+</body>
+</html>
