@@ -442,34 +442,30 @@
         }
 
         function getJobBoardExclusions() {
-            // Comprehensive exclusions for job boards (but NOT ATS platforms which are company-direct)
-            const exclusions = [
-                // Major job boards (all country versions)
-                '*linkedin.*', '*indeed.*', '*glassdoor.*', '*monster.*',
-                '*ziprecruiter.*', '*careerbuilder.*', '*dice.*', '*simplyhired.*',
-                
-                // UK job boards (all versions)
-                '*totaljobs.*', '*reed.*', '*cv-library.*', '*jobsite.*',
-                '*jobserve.*', '*jobcentreplus.*', '*gradcracker.*', '*milkround.*',
-                
-                // Irish job boards (all versions) 
-                '*irishjobs.*', '*recruitireland.*', '*jobrapido.*',
-                
-                // European job boards (all versions)
-                '*stepstone.*', '*xing.*', '*jobscout24.*', 
-                '*jobbank.*', '*workopolis.*', '*eluta.*',
-                
-                // US job boards (all versions)
-                '*usajobs.*', '*craigslist.*', '*flexjobs.*', '*upwork.*',
-                '*freelancer.*', '*guru.*',
-                
-                // Generic exclusions for any site with 'jobs' or 'job' in domain
-                '*jobs.*', '*job.*',
-                
-                // Third-party recruitment aggregators (all country versions)
-                '*adzuna.*', '*jooble.*', '*jobsearch.*',
-                '*neuvoo.*', '*trovit.*', '*careerjet.*'
+            // Comprehensive exclusions for job boards with all major country extensions
+            const jobBoardDomains = [
+                'linkedin', 'indeed', 'glassdoor', 'monster', 'ziprecruiter', 'careerbuilder', 
+                'dice', 'simplyhired', 'totaljobs', 'reed', 'cv-library', 'jobsite', 
+                'jobserve', 'jobcentreplus', 'gradcracker', 'milkround', 'irishjobs', 
+                'recruitireland', 'jobrapido', 'stepstone', 'xing', 'jobscout24', 
+                'jobbank', 'workopolis', 'eluta', 'usajobs', 'craigslist', 'flexjobs', 
+                'upwork', 'freelancer', 'guru', 'adzuna', 'jooble', 'jobsearch', 
+                'neuvoo', 'trovit', 'careerjet'
             ];
+            
+            const extensions = ['.com', '.co.uk', '.ie', '.de', '.fr', '.ca', '.au', '.in', '.sg', '.nl', '.be', '.it', '.es', '.ch'];
+            
+            let exclusions = [];
+            
+            // Add specific domain + extension combinations
+            jobBoardDomains.forEach(domain => {
+                extensions.forEach(ext => {
+                    exclusions.push(`${domain}${ext}`);
+                });
+            });
+            
+            // Add generic patterns for any domain with 'jobs' or 'job'
+            exclusions.push('*jobs.*', '*job.*');
             
             return ' AND ' + exclusions.map(site => `-site:${site}`).join(' AND ');
         }
