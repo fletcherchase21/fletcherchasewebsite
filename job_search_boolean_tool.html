@@ -453,9 +453,11 @@
                 query += query ? ` AND (${skillTerms})` : `(${skillTerms})`;
             }
             
-            // Focus on career pages but exclude job board domains
-            query += ' AND (site:careers.* OR inurl:careers OR inurl:jobs)';
-            query += getJobBoardExclusions();
+            // Focus on company career pages but avoid generic job sites
+            query += ' AND (site:careers.* OR "careers page" OR "join our team" OR "we are hiring")';
+            
+            // Keep exclusions minimal but effective
+            query += ' AND -inurl:jobs AND -inurl:job AND -inurl:career AND -site:linkedin.com/jobs AND -site:indeed.com AND -site:indeed.co.uk AND -site:glassdoor.com AND -site:glassdoor.co.uk AND -site:totaljobs.com AND -site:irishjobs.ie AND -site:jobs.ie';
             
             if (location) {
                 query += ` AND "${location}"`;
