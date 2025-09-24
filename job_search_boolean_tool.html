@@ -245,7 +245,7 @@
         <div class="main-content">
             <div class="input-section">
                 <div class="input-group">
-                    <label for="jobTitle">Job Title / Role</label>
+                    <label for="jobTitle">Job Title / Role (Optional)</label>
                     <input type="text" id="jobTitle" placeholder="e.g., Software Engineer, Marketing Manager" />
                 </div>
 
@@ -326,8 +326,9 @@
             const companySize = document.getElementById('companySize').value;
             const searchType = document.getElementById('searchType').value;
 
-            if (!jobTitle && !skills) {
-                alert('Please enter at least a job title or skills');
+            // Now only require at least one field to be filled
+            if (!jobTitle && !skills && !location && !industry) {
+                alert('Please enter at least one search criteria');
                 return;
             }
 
@@ -374,8 +375,8 @@
             const searches = [];
             const skillsArray = skills ? skills.split(',').map(s => s.trim()) : [];
             
-            // Google Search for Company Career Pages
-            if (searchType !== 'recruiter') {
+            // Company Career Pages (only if we have job title or skills)
+            if ((jobTitle || skillsArray.length > 0) && searchType !== 'recruiter') {
                 searches.push({
                     title: '🌐 Company Career Pages & Hidden Listings',
                     query: buildCareerPageQuery(jobTitle, skillsArray, location, industry),
@@ -400,8 +401,16 @@
                 description: 'Informal hiring announcements on social media'
             });
 
-            // Company Blogs & News
-            if (searchType !== 'recruiter') {
+            // NEW: Recently Funded Companies - Always show this
+            searches.push({
+                title: '💰 Recently Funded Companies',
+                query: buildRecentFundingQuery(location, industry, jobTitle, skillsArray),
+                platform: 'Google',
+                description: 'Companies that have recently raised funding and are likely expanding their teams'
+            });
+
+            // Company Growth & Expansion News (only if we have job-related criteria)
+            if ((jobTitle || skillsArray.length > 0) && searchType !== 'recruiter') {
                 searches.push({
                     title: '📰 Company Growth & Expansion News',
                     query: buildGrowthNewsQuery(jobTitle, skillsArray, location, industry),
@@ -411,7 +420,7 @@
             }
 
             // GitHub Repository Hiring
-            if (jobTitle.toLowerCase().includes('engineer') || jobTitle.toLowerCase().includes('developer') || skillsArray.some(s => ['python', 'javascript', 'react', 'node', 'java', 'c++'].includes(s.toLowerCase()))) {
+            if (jobTitle && (jobTitle.toLowerCase().includes('engineer') || jobTitle.toLowerCase().includes('developer')) || skillsArray.some(s => ['python', 'javascript', 'react', 'node', 'java', 'c++'].includes(s.toLowerCase()))) {
                 searches.push({
                     title: '💻 GitHub Repository Hiring',
                     query: buildGitHubHiringQuery(jobTitle, skillsArray, location),
@@ -512,6 +521,40 @@
             if (location) {
                 query += ` AND "${location}"`;
             }
+            
+            return query;
+        }
+
+        function buildRecentFundingQuery(location, industry, jobTitle, skills) {
+            // Build a comprehensive funding query that works with or without job title
+            let query = '("raised funding" OR "funding round" OR "investment" OR "Series A" OR "Series B" OR "Series C" OR "seed funding" OR "venture capital" OR "closes funding" OR "secures investment")';
+            
+            // Location is most important for this search
+            if (location) {
+                query += ` AND "${location}"`;
+            }
+            
+            // Industry helps narrow down relevant companies
+            if (industry) {
+                query += ` AND "${industry}"`;
+            }
+            
+            // Add job title or skills if provided, but make it optional
+            if (jobTitle) {
+                query += ` AND ("${jobTitle}" OR "hiring" OR "team expansion" OR "growing team")`;
+            } else if (skills && skills.length > 0) {
+                const skillTerms = skills.slice(0, 2).map(skill => `"${skill}"`).join(' OR ');
+                query += ` AND ("hiring" OR "team expansion" OR "growing team" OR ${skillTerms})`;
+            } else {
+                // Even without job criteria, look for hiring indicators
+                query += ` AND ("hiring" OR "team expansion" OR "growing team" OR "new hires")`;
+            }
+            
+            // Exclude job boards to focus on news and company announcements
+            query += getJobBoardExclusions();
+            
+            // Add time relevance hints
+            query += ' AND ("2024" OR "2025" OR "recent" OR "this year")';
             
             return query;
         }
