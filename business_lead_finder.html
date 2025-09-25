@@ -1,954 +1,269 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Opportunity Boolean Search Generator</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SaaS Business Development Radar — Mockup</title>
+  <style>
+    :root{
+      --bg1:#0f172a; --bg2:#0b1220;
+      --card-bg: rgba(255,255,255,0.06);
+      --glass: rgba(255,255,255,0.06);
+      --accent-1: linear-gradient(135deg,#6b21a8 0%,#0ea5a6 100%);
+      --accent-2: linear-gradient(135deg,#0ea5a6 0%,#3b82f6 100%);
+      --glass-border: rgba(255,255,255,0.08);
+      --glass-shadow: 0 6px 30px rgba(2,6,23,0.6);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', monospace;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    html,body{height:100%;margin:0;background:radial-gradient(1000px 600px at 10% 10%, rgba(59,130,246,0.07), transparent), radial-gradient(800px 500px at 90% 80%, rgba(139,92,246,0.06), transparent), linear-gradient(180deg,var(--bg1),var(--bg2));color:#e6eef8}
+    .app{max-width:1100px;margin:36px auto;padding:28px}
+    header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+    .title{max-width:72%}
+    h1{margin:0;font-size:20px;letter-spacing:-0.2px}
+    p.lead{margin:6px 0 0;color:rgba(230,238,248,0.8)}
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
+    .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .input{background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);padding:10px 12px;border-radius:10px;color:#eaf4ff}
+    input[type=text]{background:transparent;border:0;outline:none;color:inherit;width:220px}
+    select{background:transparent;border:0;color:inherit}
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 24px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-            overflow: hidden;
-        }
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:22px}
+    @media (max-width:820px){.grid{grid-template-columns:1fr}}
 
-        .header {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            color: white;
-            padding: 60px 40px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
+    .card{position:relative;padding:18px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));backdrop-filter:blur(8px);border:1px solid var(--glass-border);box-shadow:var(--glass-shadow);overflow:hidden}
+    .card .icon{width:44px;height:44px;border-radius:10px;display:inline-grid;place-items:center;margin-right:10px}
+    .card-title{display:flex;align-items:center;gap:12px}
+    .card h3{margin:0;font-size:16px}
+    .desc{margin-top:8px;color:rgba(230,238,248,0.8);font-size:13px}
+    .chips{margin-top:12px;display:flex;flex-wrap:wrap;gap:8px}
+    .chip{font-size:12px;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.03)}
 
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
-            animation: float 20s infinite linear;
-        }
+    pre.query{margin-top:14px;padding:12px;border-radius:8px;background:rgba(2,6,23,0.5);font-family:var(--mono);font-size:13px;color:#dbeafe;white-space:pre-wrap}
+    .actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+    .btn{padding:9px 12px;border-radius:10px;border:0;cursor:pointer;font-weight:600;background:linear-gradient(90deg,#111827, #0b1220);color:#e6eef8;box-shadow:0 6px 18px rgba(2,6,23,0.6)}
+    .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06)}
+    .btn.icon{display:inline-grid;place-items:center;padding:8px 10px;border-radius:10px}
 
-        @keyframes float {
-            0% { transform: translateX(0) translateY(0); }
-            100% { transform: translateX(-10px) translateY(-10px); }
-        }
+    .accent{background:var(--accent-2);color:white}
+    .small{font-size:12px}
 
-        .header-content {
-            position: relative;
-            z-index: 1;
-        }
+    .toast{position:fixed;right:26px;bottom:26px;background:rgba(0,0,0,0.6);color:white;padding:10px 14px;border-radius:10px;display:none}
 
-        .header h1 {
-            font-size: 3.2em;
-            margin-bottom: 15px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #fff, #e0e7ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+    .engine-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .engine{font-size:12px;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.02)}
 
-        .header p {
-            font-size: 1.3em;
-            opacity: 0.9;
-            max-width: 800px;
-            margin: 0 auto;
-            line-height: 1.6;
-        }
+    .card:hover{transform:translateY(-6px);transition:transform .26s cubic-bezier(.2,.9,.3,1)}
 
-        .main-content {
-            padding: 50px 40px;
-        }
+    .spinner{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,0.12);border-top-color:transparent;animation:spin 0.9s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
 
-        .form-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
-            padding: 40px;
-            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-            border-radius: 20px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group label {
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 8px;
-            font-size: 1.1em;
-            display: flex;
-            align-items: center;
-        }
-
-        .label-icon {
-            margin-right: 8px;
-            font-size: 1.2em;
-        }
-
-        .form-control {
-            padding: 16px 20px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 1em;
-            transition: all 0.3s ease;
-            background: white;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-        }
-
-        .form-control::placeholder {
-            color: #94a3b8;
-        }
-
-        textarea.form-control {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .generate-section {
-            text-align: center;
-            margin: 40px 0;
-        }
-
-        .generate-btn {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: white;
-            border: none;
-            padding: 18px 40px;
-            font-size: 1.3em;
-            font-weight: 600;
-            border-radius: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);
-            min-width: 280px;
-        }
-
-        .generate-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(245, 158, 11, 0.4);
-        }
-
-        .generate-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .results-container {
-            margin-top: 40px;
-        }
-
-        .search-result {
-            margin-bottom: 25px;
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-            transition: all 0.3s ease;
-            border: 1px solid #f1f5f9;
-        }
-
-        .search-result:hover {
-            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
-            transform: translateY(-2px);
-        }
-
-        .result-header {
-            background: linear-gradient(135deg, #1e293b, #334155);
-            color: white;
-            padding: 20px 25px;
-            font-weight: 600;
-            font-size: 1.2em;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .result-icon {
-            font-size: 1.4em;
-        }
-
-        .result-content {
-            padding: 25px;
-        }
-
-        .result-description {
-            margin-bottom: 20px;
-            color: #475569;
-            font-size: 1.1em;
-            line-height: 1.6;
-        }
-
-        .search-string-container {
-            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            position: relative;
-            font-family: 'Monaco', 'Menlo', monospace;
-            font-size: 0.9em;
-            word-break: break-word;
-            line-height: 1.5;
-        }
-
-        .copy-btn {
-            background: #10b981;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9em;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            position: absolute;
-            top: 15px;
-            right: 15px;
-        }
-
-        .copy-btn:hover {
-            background: #059669;
-        }
-
-        .search-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .search-link {
-            display: inline-flex;
-            align-items: center;
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            color: white;
-            padding: 12px 20px;
-            text-decoration: none;
-            border-radius: 10px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            font-size: 0.95em;
-        }
-
-        .search-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
-        }
-
-        .search-link-icon {
-            margin-right: 8px;
-            font-size: 1.1em;
-        }
-
-        .tips-section {
-            background: linear-gradient(135deg, #7c3aed, #5b21b6);
-            color: white;
-            padding: 50px 40px;
-            margin-top: 50px;
-            border-radius: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .tips-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><polygon points="50,0 60,40 100,40 70,65 80,100 50,80 20,100 30,65 0,40 40,40" fill="rgba(255,255,255,0.05)"/></svg>') repeat;
-            opacity: 0.1;
-        }
-
-        .tips-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .tips-section h3 {
-            font-size: 2.2em;
-            margin-bottom: 30px;
-            text-align: center;
-            font-weight: 700;
-        }
-
-        .tips-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 25px;
-        }
-
-        .tip-card {
-            background: rgba(255,255,255,0.1);
-            padding: 30px;
-            border-radius: 16px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-            transition: all 0.3s ease;
-        }
-
-        .tip-card:hover {
-            background: rgba(255,255,255,0.15);
-            transform: translateY(-2px);
-        }
-
-        .tip-card h4 {
-            font-size: 1.3em;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-        }
-
-        .tip-card-icon {
-            margin-right: 12px;
-            font-size: 1.5em;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #64748b;
-        }
-
-        .loading-spinner {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            border: 4px solid #f3f4f6;
-            border-radius: 50%;
-            border-top-color: #3b82f6;
-            animation: spin 1s ease-in-out infinite;
-            margin-bottom: 20px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                margin: 10px;
-                border-radius: 16px;
-            }
-            
-            .header {
-                padding: 40px 20px;
-            }
-            
-            .header h1 {
-                font-size: 2.2em;
-            }
-            
-            .main-content {
-                padding: 30px 20px;
-            }
-            
-            .form-section {
-                grid-template-columns: 1fr;
-                padding: 30px 20px;
-            }
-            
-            .search-links {
-                justify-content: center;
-            }
-        }
-    </style>
+    footer{margin-top:26px;color:rgba(230,238,248,0.7);font-size:13px}
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="header-content">
-                <h1>🔍 Business Lead Finder</h1>
-                <p>Generate targeted Boolean searches to discover companies that need your services across multiple industries</p>
-            </div>
+  <div class="app">
+    <header>
+      <div class="title">
+        <h1>Business Development Radar</h1>
+        <p class="lead">Discover companies showing signals of funding, expansion, product, partnerships, or service gaps — copy queries or search instantly.</p>
+      </div>
+      <div class="controls">
+        <div class="input">
+          <label class="small">Location</label>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:6px">
+            <input id="location" type="text" placeholder="e.g. London, Remote, Europe" value="" />
+          </div>
         </div>
-
-        <div class="main-content">
-            <div class="form-section">
-                <div class="form-group">
-                    <label for="location">
-                        <span class="label-icon">📍</span>
-                        Location (Required)
-                    </label>
-                    <input type="text" id="location" class="form-control" placeholder="e.g., Dublin, Ireland" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="targetIndustry">
-                        <span class="label-icon">🏢</span>
-                        Target Industry/Sector
-                    </label>
-                    <select id="targetIndustry" class="form-control">
-                        <option value="">Any Industry</option>
-                        <option value="Technology">Technology</option>
-                        <option value="Fintech">Fintech</option>
-                        <option value="Healthcare">Healthcare</option>
-                        <option value="E-commerce">E-commerce</option>
-                        <option value="SaaS">SaaS</option>
-                        <option value="Manufacturing">Manufacturing</option>
-                        <option value="Professional Services">Professional Services</option>
-                        <option value="Media">Media & Entertainment</option>
-                        <option value="Education">Education</option>
-                        <option value="Real Estate">Real Estate</option>
-                        <option value="Retail">Retail</option>
-                        <option value="Food & Beverage">Food & Beverage</option>
-                        <option value="Energy">Energy</option>
-                        <option value="Construction">Construction</option>
-                        <option value="Automotive">Automotive</option>
-                        <option value="Travel">Travel & Hospitality</option>
-                        <option value="Non-profit">Non-profit</option>
-                        <option value="Government">Government</option>
-                        <option value="Startups">Startups</option>
-                        <option value="Scale-ups">Scale-ups</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="serviceType">
-                        <span class="label-icon">⚙️</span>
-                        Your Service Type
-                    </label>
-                    <select id="serviceType" class="form-control">
-                        <option value="">Select Service Type</option>
-                        <option value="Recruitment">Recruitment & Staffing</option>
-                        <option value="Digital Marketing">Digital Marketing</option>
-                        <option value="SEO">SEO & Content Marketing</option>
-                        <option value="Social Media">Social Media Marketing</option>
-                        <option value="Sales">Sales & Business Development</option>
-                        <option value="Lead Generation">Lead Generation</option>
-                        <option value="Business Consulting">Business Consulting</option>
-                        <option value="Management Consulting">Management Consulting</option>
-                        <option value="IT Services">IT Services & Support</option>
-                        <option value="Software Development">Software Development</option>
-                        <option value="Web Development">Web Development</option>
-                        <option value="Cybersecurity">Cybersecurity</option>
-                        <option value="Cloud Services">Cloud Services</option>
-                        <option value="Legal Services">Legal Services</option>
-                        <option value="Corporate Law">Corporate Law</option>
-                        <option value="Accounting">Accounting & Finance</option>
-                        <option value="Tax Services">Tax Services</option>
-                        <option value="HR Services">HR Services</option>
-                        <option value="Training">Training & Development</option>
-                        <option value="Design Services">Design Services</option>
-                        <option value="PR">Public Relations</option>
-                        <option value="Event Management">Event Management</option>
-                        <option value="Real Estate">Commercial Real Estate</option>
-                        <option value="Facilities Management">Facilities Management</option>
-                        <option value="Logistics">Logistics & Supply Chain</option>
-                        <option value="Insurance">Insurance Services</option>
-                        <option value="Financial Services">Financial Services</option>
-                        <option value="Translation">Translation Services</option>
-                        <option value="Video Production">Video Production</option>
-                        <option value="Photography">Photography</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="companySize">
-                        <span class="label-icon">👥</span>
-                        Company Size
-                    </label>
-                    <select id="companySize" class="form-control">
-                        <option value="">Any Size</option>
-                        <option value="startup">Startup (1-50 employees)</option>
-                        <option value="small">Small (51-200 employees)</option>
-                        <option value="medium">Medium (201-1000 employees)</option>
-                        <option value="large">Large (1000+ employees)</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="keywords">
-                        <span class="label-icon">🔑</span>
-                        Additional Keywords
-                    </label>
-                    <textarea id="keywords" class="form-control" placeholder="Enter specific terms, skills, or technologies relevant to your service"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="timeframe">
-                        <span class="label-icon">⏰</span>
-                        Search Timeframe
-                    </label>
-                    <select id="timeframe" class="form-control">
-                        <option value="recent">Recent (Past 3 months)</option>
-                        <option value="6months">Past 6 months</option>
-                        <option value="year">Past year</option>
-                        <option value="any">Any time</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="generate-section">
-                <button class="generate-btn" onclick="generateSearches()" id="generateBtn">
-                    🚀 Generate Targeted Searches
-                </button>
-            </div>
-
-            <div id="results" class="results-container hidden">
-                <!-- Results will be generated here -->
-            </div>
-
-            <div class="tips-section">
-                <div class="tips-content">
-                    <h3>💡 Pro Tips for Finding Business Opportunities</h3>
-                    <div class="tips-grid">
-                        <div class="tip-card">
-                            <h4><span class="tip-card-icon">🎯</span>Target Growth Signals</h4>
-                            <p>Look for companies announcing funding, expansion, or new product launches - they often need external services to support growth.</p>
-                        </div>
-                        <div class="tip-card">
-                            <h4><span class="tip-card-icon">⏰</span>Timing Matters</h4>
-                            <p>Recent announcements (2-6 months old) are ideal - companies have made decisions but may not have implemented solutions yet.</p>
-                        </div>
-                        <div class="tip-card">
-                            <h4><span class="tip-card-icon">🔍</span>Look for Pain Points</h4>
-                            <p>Companies mentioning challenges, struggles, or "need help" are actively seeking solutions and more likely to engage.</p>
-                        </div>
-                        <div class="tip-card">
-                            <h4><span class="tip-card-icon">🌐</span>Multiple Platforms</h4>
-                            <p>Use different search engines and try LinkedIn, Twitter, and company blogs for varied perspectives and opportunities.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="input">
+          <label class="small">Industry</label>
+          <div style="margin-top:6px">
+            <select id="industry">
+              <option value="SaaS" selected>SaaS</option>
+              <option value="Digital Marketing">Digital Marketing</option>
+              <option value="Legal">Legal</option>
+              <option value="IT Services">IT Services</option>
+              <option value="Consulting">Consulting</option>
+              <option value="Recruitment">Recruitment</option>
+            </select>
+          </div>
         </div>
-    </div>
+        <div class="input" style="padding:8px 12px">
+          <label class="small">Engines</label>
+          <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap">
+            <label class="engine"><input id="eng-google" type="checkbox" checked /> Google</label>
+            <label class="engine"><input id="eng-bing" type="checkbox" checked /> Bing</label>
+            <label class="engine"><input id="eng-ddg" type="checkbox" checked /> DuckDuckGo</label>
+            <label class="engine"><input id="eng-linkedin" type="checkbox" checked /> LinkedIn</label>
+            <label class="engine"><input id="eng-social" type="checkbox" checked /> Social</label>
+          </div>
+        </div>
+      </div>
+    </header>
 
-    <script>
-        function generateSearches() {
-            const location = document.getElementById('location').value.trim();
-            
-            if (!location) {
-                alert('Please enter a location to generate searches.');
-                return;
-            }
-            
-            const params = {
-                location,
-                targetIndustry: document.getElementById('targetIndustry').value,
-                serviceType: document.getElementById('serviceType').value,
-                companySize: document.getElementById('companySize').value,
-                keywords: document.getElementById('keywords').value.trim(),
-                timeframe: document.getElementById('timeframe').value
-            };
-            
-            const resultsContainer = document.getElementById('results');
-            resultsContainer.innerHTML = '<div class="loading"><div class="loading-spinner"></div><p>Generating targeted searches...</p></div>';
-            resultsContainer.classList.remove('hidden');
-            
-            // Simulate loading time for better UX
-            setTimeout(() => {
-                renderSearchResults(params);
-            }, 1000);
-        }
+    <main class="grid" id="cards">
+      <!-- Funding -->
+      <section class="card" data-trigger="funding" aria-labelledby="t1">
+        <div class="card-title">
+          <div class="icon" style="background:linear-gradient(135deg,#7c3aed,#06b6d4);color:white">💰</div>
+          <div>
+            <h3 id="t1">Funding Trigger</h3>
+            <div class="desc">Companies that recently raised capital are under pressure to scale — great timing for BD.</div>
+          </div>
+        </div>
+        <pre class="query" data-template>"[industry]" AND ("raises Series A" OR "funding round" OR "venture-backed" OR "IPO") [location]</pre>
+        <div class="actions">
+          <button class="btn accent" data-copy>Copy</button>
+          <button class="btn secondary" data-search>Search</button>
+        </div>
+      </section>
 
-        function renderSearchResults(params) {
-            const resultsContainer = document.getElementById('results');
-            resultsContainer.innerHTML = '';
-            
-            // Generate different types of searches based on service type
-            const searches = generateSearchStrategies(params);
-            
-            searches.forEach(search => {
-                const resultDiv = createSearchResult(search);
-                resultsContainer.appendChild(resultDiv);
-            });
-        }
+      <!-- Expansion -->
+      <section class="card" data-trigger="expansion" aria-labelledby="t2">
+        <div class="card-title">
+          <div class="icon" style="background:linear-gradient(135deg,#06b6d4,#3b82f6);color:white">🌍</div>
+          <div>
+            <h3 id="t2">Expansion Trigger</h3>
+            <div class="desc">Companies entering new regions or markets — they need local BD, partners, and demand gen.</div>
+          </div>
+        </div>
+        <pre class="query" data-template>"[industry]" AND ("expands to" OR "opens office in" OR "new market entry" OR "global rollout") [location]</pre>
+        <div class="actions">
+          <button class="btn accent" data-copy>Copy</button>
+          <button class="btn secondary" data-search>Search</button>
+        </div>
+      </section>
 
-        function generateSearchStrategies(params) {
-            const searches = [];
-            const serviceType = params.serviceType;
-            
-            // Universal searches that work for all service types
-            searches.push({
-                title: '💰 Recently Funded Companies',
-                icon: '💰',
-                description: 'Companies that have recently raised funding and are likely expanding or needing new services',
-                query: buildFundingQuery(params)
-            });
-            
-            searches.push({
-                title: '🚀 Rapid Growth Companies',
-                icon: '🚀',  
-                description: 'Fast-growing companies that may need external support to scale',
-                query: buildGrowthQuery(params)
-            });
-            
-            // Service-specific searches
-            if (serviceType) {
-                searches.push(...getServiceSpecificSearches(params));
-            }
-            
-            // Generic opportunity search
-            searches.push({
-                title: '🔍 Service Gap Opportunities',
-                icon: '🔍',
-                description: 'Companies mentioning challenges or needs related to your service area',
-                query: buildServiceGapQuery(params)
-            });
-            
-            return searches;
-        }
+      <!-- Product Launch -->
+      <section class="card" data-trigger="product" aria-labelledby="t3">
+        <div class="card-title">
+          <div class="icon" style="background:linear-gradient(135deg,#ef4444,#f97316);color:white">📦</div>
+          <div>
+            <h3 id="t3">Product Launch Trigger</h3>
+            <div class="desc">New features, betas or integrations — ideal moments for GTM and partner outreach.</div>
+          </div>
+        </div>
+        <pre class="query" data-template>"[industry]" AND ("launches new platform" OR "beta release" OR "introduces feature" OR "integration with") [location]</pre>
+        <div class="actions">
+          <button class="btn accent" data-copy>Copy</button>
+          <button class="btn secondary" data-search>Search</button>
+        </div>
+      </section>
 
-        function getServiceSpecificSearches(params) {
-            const serviceType = params.serviceType;
-            const searches = [];
-            
-            switch(serviceType) {
-                case 'Recruitment':
-                    searches.push({
-                        title: '😰 Hiring Struggles',
-                        icon: '😰',
-                        description: 'Companies publicly expressing difficulty finding talent',
-                        query: buildHiringStrugglesQuery(params)
-                    });
-                    break;
-                    
-                case 'Digital Marketing':
-                case 'SEO':
-                case 'Social Media':
-                    searches.push({
-                        title: '🚀 Product Launches Without Marketing',
-                        icon: '🚀',
-                        description: 'Companies launching products but not mentioning marketing support',
-                        query: buildProductLaunchQuery(params)
-                    });
-                    break;
-                    
-                case 'Sales':
-                case 'Lead Generation':
-                    searches.push({
-                        title: '📈 Growth Without Sales Team',
-                        icon: '📈',
-                        description: 'Growing companies that may lack sales infrastructure',
-                        query: buildSalesGapQuery(params)
-                    });
-                    break;
-                    
-                case 'IT Services':
-                case 'Cybersecurity':
-                case 'Cloud Services':
-                    searches.push({
-                        title: '🔒 Technology Challenges',
-                        icon: '🔒',
-                        description: 'Companies mentioning IT, security, or technology challenges',
-                        query: buildTechChallengesQuery(params)
-                    });
-                    break;
-                    
-                case 'Legal Services':
-                case 'Corporate Law':
-                    searches.push({
-                        title: '⚖️ Legal & Compliance Needs',
-                        icon: '⚖️',
-                        description: 'Companies facing legal or regulatory challenges',
-                        query: buildLegalNeedsQuery(params)
-                    });
-                    break;
-                    
-                case 'Business Consulting':
-                case 'Management Consulting':
-                    searches.push({
-                        title: '⚡ Operational Challenges',
-                        icon: '⚡',
-                        description: 'Companies experiencing growing pains or operational issues',
-                        query: buildOperationalChallengesQuery(params)
-                    });
-                    break;
-                    
-                default:
-                    searches.push({
-                        title: '🎯 Industry Challenges',
-                        icon: '🎯',
-                        description: 'Companies mentioning challenges that your service could solve',
-                        query: buildGenericChallengesQuery(params)
-                    });
-            }
-            
-            return searches;
-        }
+      <!-- Partnership -->
+      <section class="card" data-trigger="partnership" aria-labelledby="t4">
+        <div class="card-title">
+          <div class="icon" style="background:linear-gradient(135deg,#06b6d4,#8b5cf6);color:white">🤝</div>
+          <div>
+            <h3 id="t4">Partnership Trigger</h3>
+            <div class="desc">Signals of ecosystem or channel focus — companies open to integrations, marketplaces, and partners.</div>
+          </div>
+        </div>
+        <pre class="query" data-template>"[industry]" AND ("strategic partnership" OR "channel partner program" OR "ecosystem expansion" OR "joins marketplace") [location]</pre>
+        <div class="actions">
+          <button class="btn accent" data-copy>Copy</button>
+          <button class="btn secondary" data-search>Search</button>
+        </div>
+      </section>
 
-        function buildFundingQuery(params) {
-            let query = '("raised funding" OR "funding round" OR "Series A" OR "Series B" OR "Series C" OR "seed funding" OR "investment" OR "venture capital")';
-            
-            if (params.location) {
-                query += ` "${params.location}"`;
-            }
-            
-            if (params.targetIndustry) {
-                query += ` "${params.targetIndustry}"`;
-            }
-            
-            query += getJobBoardExclusions();
-            query += getTimeframeFilter(params.timeframe);
-            
-            return query;
-        }
+      <!-- Service Gap Opportunities -->
+      <section class="card" data-trigger="servicegap" aria-labelledby="t5">
+        <div class="card-title">
+          <div class="icon" style="background:linear-gradient(135deg,#10b981,#3b82f6);color:white">📢</div>
+          <div>
+            <h3 id="t5">Service Gap Opportunities</h3>
+            <div class="desc">Social posts where businesses express needs: potential leads via community boards and social networks.</div>
+          </div>
+        </div>
+        <pre class="query" data-template>("need help with" OR "looking for" OR "solution wanted" OR "anyone know how to") AND "[industry]" [location]</pre>
+        <div class="actions">
+          <button class="btn accent" data-copy>Copy</button>
+          <button class="btn secondary" data-search>Search</button>
+        </div>
+      </section>
+    </main>
 
-        function buildGrowthQuery(params) {
-            let query = '("rapid growth" OR "scaling fast" OR "expanding quickly" OR "team growth" OR "aggressive expansion" OR "doubling revenue" OR "growing team")';
-            
-            if (params.location) {
-                query += ` "${params.location}"`;
-            }
-            
-            if (params.targetIndustry) {
-                query += ` "${params.targetIndustry}"`;
-            }
-            
-            if (params.serviceType) {
-                query += ` -"${params.serviceType.toLowerCase()}"`;
-            }
-            
-            query += getJobBoardExclusions();
-            
-            return query;
-        }
+    <div class="toast" id="toast">Copied to clipboard</div>
 
-        function buildServiceGapQuery(params) {
-            let query = '("need help" OR "looking for" OR "struggling with" OR "challenge" OR "difficult to" OR "seeking" OR "require support")';
-            
-            if (params.location) {
-                query += ` "${params.location}"`;
-            }
-            
-            if (params.targetIndustry) {
-                query += ` "${params.targetIndustry}"`;
-            }
-            
-            if (params.keywords) {
-                const keywords = params.keywords.split(',').map(k => k.trim()).slice(0, 3);
-                query += ` (${keywords.map(k => `"${k}"`).join(' OR ')})`;
-            }
-            
-            return query;
-        }
+    <footer>
+      Tip: Choose an industry and location to scope queries. "Service Gap Opportunities" will search social/community platforms (Twitter, Reddit, etc.).
+    </footer>
+  </div>
 
-        function buildHiringStrugglesQuery(params) {
-            let query = '("struggling to hire" OR "difficult to find" OR "talent shortage" OR "recruitment challenge" OR "hard to recruit" OR "hiring difficulties")';
-            
-            if (params.location) {
-                query += ` "${params.location}"`;
-            }
-            
-            if (params.targetIndustry) {
-                query += ` "${params.targetIndustry}"`;
-            }
-            
-            query += ' -"recruitment agency" -"staffing firm"';
-            
-            return query;
-        }
+  <script>
+    const industryMap = {
+      "SaaS": {
+        funding: ["raises Series A","funding round","venture-backed","IPO"],
+        expansion: ["expands to","opens office in","new market entry","global rollout"],
+        product: ["launches new platform","beta release","introduces feature","integration with"],
+        partnership: ["strategic partnership","channel partner program","ecosystem expansion","joins marketplace"]
+      },
+      "Digital Marketing": {
+        funding: ["hires marketing team","CMO appointment","growth funding"],
+        expansion: ["expands campaign","opens office","regional marketing"],
+        product: ["launches campaign","new brand strategy","rolls out website"],
+        partnership: ["agency partnership","channel marketing","co-marketing initiative"]
+      },
+      "Legal": {
+        funding: ["funding legal requirements","compliance funding"],
+        expansion: ["opens office","cross-border expansion"],
+        product: ["introduces regulation service","new compliance platform"],
+        partnership: ["legal advisory partnership","law firm alliance"]
+      }
+      // Add other industries similarly
+    };
 
-        function buildProductLaunchQuery(params) {
-            let query = '("launching" OR "new product" OR "product launch" OR "introducing" OR "unveiling")';
-            
-            if (params.location) {
-                query += ` "${params.location}"`;
-            }
-            
-            if (params.targetIndustry) {
-                query += ` "${params.targetIndustry}"`;
-            }
-            
-            query += ' -"marketing team" -"marketing agency" -"CMO"';
-            query += getJobBoardExclusions();
-            
-            return query;
-        }
+    function buildEngineUrl(engine, q){
+      const encoded = encodeURIComponent(q);
+      switch(engine){
+        case 'google': return `https://www.google.com/search?q=${encoded}`;
+        case 'bing': return `https://www.bing.com/search?q=${encoded}`;
+        case 'ddg': return `https://duckduckgo.com/?q=${encoded}`;
+        case 'linkedin': return `https://www.linkedin.com/search/results/all/?keywords=${encoded}`;
+        case 'social': return `https://twitter.com/search?q=${encoded}`; // starting with Twitter/X
+        default: return `https://www.google.com/search?q=${encoded}`;
+      }
+    }
 
-        function buildSalesGapQuery(params) {
-            let query = '("growing revenue" OR "expanding" OR "new market" OR "scaling business") -"sales team" -"business development" -"sales manager"';
-            
-            if (params.location) {
-                query += ` "${params.location}"`;
-            }
-            
-            if (params.targetIndustry) {
-                query += ` "${params.targetIndustry}"`;
-            }
-            
-            return query;
-        }
+    function showToast(msg){
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.style.display = 'block';
+      setTimeout(()=> t.style.display='none',1600);
+    }
 
-        function buildTechChallengesQuery(params) {
-            let query = '("IT challenges" OR "technology issues" OR "system problems" OR "cybersecurity" OR "data breach" OR "cloud migration" OR "digital transformation")';
-            
-            if (params.location) {
-                query += ` "${params.location}"`;
-            }
-            
-            if (params.targetIndustry) {
-                query += ` "${params.targetIndustry}"`;
-            }
-            
-            query += ' -"IT team" -"CTO" -"technical team"';
-            
-            return query;
-        }
+    function resolveTemplate(template, trigger){
+      const loc = document.getElementById('location').value.trim();
+      const ind = document.getElementById('industry').value;
+      let q = template.replace(/\[industry\]/g, ind);
+      q = q.replace(/\[location\]/g, loc? `AND (\"${loc}\" OR ${loc})` : '');
+      return q.replace(/\s+/g,' ').trim();
+    }
 
-        function buildLegalNeedsQuery(params) {
-            let query = '("legal issues" OR "compliance" OR "regulatory" OR "lawsuit" OR "contract" OR "intellectual property" OR "GDPR" OR "data protection")';
-            
-            if (params.location) {
-                query += ` "${params.location}"`;
-            }
-            
-            if (params.targetIndustry) {
-                query += ` "${params.targetIndustry}"`;
-            }
-            
-            query += ' -"law firm" -"legal team" -"general counsel"';
-            
-            return query;
-        }
+    document.querySelectorAll('[data-copy]').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        const card = btn.closest('.card');
+        const trigger = card.dataset.trigger;
+        const template = card.querySelector('pre.query').textContent;
+        const q = resolveTemplate(template, trigger);
+        navigator.clipboard.writeText(q).then(()=> showToast('Query copied'));
+      });
+    });
 
-        function buildOperationalChallengesQuery(params) {
-            let query = '("operational challenges" OR "growing pains" OR "scaling issues" OR "process improvement" OR "efficiency" OR "organizational change")';
-            
-            if (params.location) {
-                query += ` "${params.location}"`;
-            }
-            
-            if (params.targetIndustry) {
-                query += ` "${params.targetIndustry}"`;
-            }
-            
-            query += ' -"consultant" -"consulting firm"';
-            
-            return query;
-        }
+    document.querySelectorAll('[data-search]').forEach(btn=>{
+      btn.addEventListener('click',async ()=>{
+        const card = btn.closest('.card');
+        const trigger = card.dataset.trigger;
+        const template = card.querySelector('pre.query').textContent;
+        const q = resolveTemplate(template, trigger);
 
-        function buildGenericChallengesQuery(params) {
-            let query = '("challenges" OR "problems" OR "difficulties" OR "need help" OR "struggling")';
-            
-            if (params.location) {
-                query += ` "${params.location}"`;
-            }
-            
-            if (params.targetIndustry) {
-                query += ` "${params.targetIndustry}"`;
-            }
-            
-            if (params.keywords) {
-                const keywords = params.keywords.split(',').map(k => k.trim()).slice(0, 2);
-                query += ` (${keywords.map(k => `"${k}"`).join(' OR ')})`;
-            }
-            
-            return query;
-        }
+        const engines = [];
+        if(document.getElementById('eng-google').checked) engines.push('google');
+        if(document.getElementById('eng-bing').checked) engines.push('bing');
+        if(document.getElementById('eng-ddg').checked) engines.push('ddg');
+        if(document.getElementById('eng-linkedin').checked) engines.push('linkedin');
+        if(document.getElementById('eng-social').checked && trigger==="servicegap") engines.push('social');
 
-        function getJobBoardExclusions() {
-            return ' -site:indeed.com -site:linkedin.com/jobs -site:glassdoor.com -site:monster.com -site:ziprecruiter.com -site:totaljobs.com -site:reed.co.uk -site:irishjobs.ie -site:jobs.ie';
-        }
+        if(engines.length===0){ showToast('Select an engine'); return; }
 
-        function getTimeframeFilter(timeframe) {
-            const now = new Date();
-            const year = now.getFullYear();
-            
-            switch(timeframe) {
-                case 'recent':
-                    return ` ("2024" OR "2025" OR "recent" OR "this year")`;
-                case '6months':
-                    return ` ("2024" OR "past 6 months" OR "recent")`;
-                case 'year':
-                    return ` ("2024" OR "past year")`;
-                default:
-                    return '';
-            }
-        }
-
-        function createSearchResult(search) {
-            const div = document.createElement('div');
-            div.className = 'search-result';
-            
-            const encodedQuery = encodeURIComponent(search.query);
-            const googleUrl = `https://www.google.com/search?q=${encodedQuery}`;
-            const duckUrl = `https://duckduckgo.com/?q=${encodedQuery}`;
-            const bingUrl = `https://www.bing.com/search?q=${encodedQuery}`;
-            const linkedinUrl = `https://www.linkedin.com/search/results/content/?keywords=${encodedQuery}`;
-            
-            div.innerHTML = `
-                <div class="result-header">
-                    <span>${search.title}</span>
-                    <span class="result-icon">${search.icon}</span>
-                </div>
-                <div class="result-content">
-                    <p class="result-description">${search.description}</p>
-                    <div class="search-string-container">
-                        ${search.query}
-                        <button class="copy-btn" onclick="copyToClipboard('${search.query.replace(/'/g, "\\'")}', this)">Copy</button>
-                    </div>
-                    <div class="search-links">
-                        <a href="${googleUrl}" target="_blank" class="search-link">
-                            <span class="search-link-icon">🔍</span>Google Search
-                        </a>
-                        <a href="${duckUrl}" target="_blank" class="search-link">
-                            <span class="search-link-icon">🦆</span>DuckDuckGo
-                        </a>
-                        <a href="${bingUrl}" target="_blank" class="search-link">
-                            <span class="search-link-icon">🔍</span>Bing Search
-                        </a>
-                        <a href="${linkedinUrl}" target="_blank" class="search-link">
-                            <span class="search-link-icon">💼</span>LinkedIn
-                        </a>
-                    </div>
-                </div>
-            `;
-            
-            return div;
-        }
-
-        function copyToClipboard(text, button) {
-            navigator.clipboard.writeText(text).then(() => {
-                const originalText = button.textContent;
-                button.textContent = 'Copied!';
-                button.style.background = '#059669';
-                
-                setTimeout(() => {
-                    button.textContent = originalText;
-                    button.style.background = '#10b981';
-                }, 2000);
-            }).catch(err => {
-                console.error('Failed to copy: ', err);
-                alert('Failed to copy to clipboard');
-            });
-        }
-    </script>
-</body>
-</html>
+        const orig = btn.innerHTML;
+        btn
