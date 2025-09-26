@@ -54,12 +54,13 @@
         <label><input type="checkbox" id="eng-bing"> Bing</label>
         <label><input type="checkbox" id="eng-ddg"> DuckDuckGo</label>
         <label><input type="checkbox" id="eng-linkedin"> LinkedIn</label>
-        <label><input type="checkbox" id="eng-social"> Social (X, Reddit, Facebook, Discord)</label>
+        <label><input type="checkbox" id="eng-social"> Social (via Google: X, Reddit, Facebook, Discord)</label>
       </div>
     </div>
   </header>
 
   <main class="grid">
+    <!-- Cards unchanged -->
     <section class="card" data-trigger="funding">
       <h3>Funding Trigger</h3>
       <pre data-template>"[industry]" AND (
@@ -161,12 +162,17 @@
           return url;
         }
         case 'linkedin': return `https://www.linkedin.com/search/results/all/?keywords=${encoded}`;
-        case 'social': return [
-          `https://x.com/search?q=${encoded}`,
-          `https://www.reddit.com/search/?q=${encoded}`,
-          `https://www.facebook.com/search/top/?q=${encoded}`,
-          `https://discord.com/app/search?q=${encoded}`
-        ];
+        case 'social': {
+          // Build a Google query targeting social media platforms
+          const socialQuery = `${q} (site:x.com OR site:reddit.com OR site:facebook.com OR site:discord.com)`;
+          let url = `https://www.google.com/search?q=${encodeURIComponent(socialQuery)}`;
+          if(tf !== 'any') {
+            if(tf === '1m') url += '&tbs=qdr:m';
+            if(tf === '3m') url += '&tbs=qdr:3m';
+            if(tf === '6m') url += '&tbs=qdr:6m';
+          }
+          return url;
+        }
         default: return `https://www.google.com/search?q=${encoded}`;
       }
     }
