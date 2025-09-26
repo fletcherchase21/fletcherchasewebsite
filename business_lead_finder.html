@@ -54,7 +54,7 @@
         <label><input type="checkbox" id="eng-bing"> Bing</label>
         <label><input type="checkbox" id="eng-ddg"> DuckDuckGo</label>
         <label><input type="checkbox" id="eng-linkedin"> LinkedIn</label>
-        <label><input type="checkbox" id="eng-social"> Social (Twitter + Discord)</label>
+        <label><input type="checkbox" id="eng-social"> Social (X, Reddit, Facebook, Discord)</label>
       </div>
     </div>
   </header>
@@ -162,7 +162,9 @@
         }
         case 'linkedin': return `https://www.linkedin.com/search/results/all/?keywords=${encoded}`;
         case 'social': return [
-          `https://twitter.com/search?q=${encoded}`,
+          `https://x.com/search?q=${encoded}`,
+          `https://www.reddit.com/search/?q=${encoded}`,
+          `https://www.facebook.com/search/top/?q=${encoded}`,
           `https://discord.com/app/search?q=${encoded}`
         ];
         default: return `https://www.google.com/search?q=${encoded}`;
@@ -204,7 +206,7 @@
         if(document.getElementById('eng-bing').checked) engines.push('bing');
         if(document.getElementById('eng-ddg').checked) engines.push('ddg');
         if(document.getElementById('eng-linkedin').checked) engines.push('linkedin');
-        if(document.getElementById('eng-social').checked && card.dataset.trigger === 'servicegap') engines.push('social');
+        if(document.getElementById('eng-social').checked) engines.push('social');
 
         engines.forEach(engine => {
           const url = buildEngineUrl(engine, q);
