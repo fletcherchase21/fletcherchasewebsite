@@ -54,7 +54,7 @@
         <label><input type="checkbox" id="eng-bing"> Bing</label>
         <label><input type="checkbox" id="eng-ddg"> DuckDuckGo</label>
         <label><input type="checkbox" id="eng-linkedin"> LinkedIn</label>
-        <label><input type="checkbox" id="eng-social"> Social</label>
+        <label><input type="checkbox" id="eng-social"> Social (Twitter + Discord)</label>
       </div>
     </div>
   </header>
@@ -161,7 +161,10 @@
           return url;
         }
         case 'linkedin': return `https://www.linkedin.com/search/results/all/?keywords=${encoded}`;
-        case 'social': return `https://twitter.com/search?q=${encoded}`;
+        case 'social': return [
+          `https://twitter.com/search?q=${encoded}`,
+          `https://discord.com/app/search?q=${encoded}`
+        ];
         default: return `https://www.google.com/search?q=${encoded}`;
       }
     }
@@ -205,7 +208,11 @@
 
         engines.forEach(engine => {
           const url = buildEngineUrl(engine, q);
-          window.open(url, '_blank');
+          if(Array.isArray(url)) {
+            url.forEach(u => window.open(u, '_blank'));
+          } else {
+            window.open(url, '_blank');
+          }
         });
       });
     });
