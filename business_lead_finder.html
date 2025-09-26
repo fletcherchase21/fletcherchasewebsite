@@ -60,8 +60,78 @@
   </header>
 
   <main class="grid">
-    <!-- Existing cards unchanged -->
+    <!-- Funding Trigger Card -->
+    <section class="card" data-trigger="funding">
+      <h3>Funding Trigger</h3>
+      <pre data-template>"[industry]" AND (
+  "raises Series A" OR "raises Series B" OR "funding round" OR "venture-backed" OR 
+  "seed investment" OR "capital raise" OR "private equity investment" OR "IPO announced"
+) [location]</pre>
+      <div class="actions">
+        <button class="btn" data-copy>Copy</button>
+        <button class="btn" data-search>Search</button>
+      </div>
+    </section>
 
+    <!-- Expansion Trigger Card -->
+    <section class="card" data-trigger="expansion">
+      <h3>Expansion Trigger</h3>
+      <pre data-template>"[industry]" AND (
+  "expands to" OR "opens office in" OR "new branch" OR "launches operations" OR 
+  "new market entry" OR "international expansion" OR "franchise opening" OR "regional hub"
+) [location]</pre>
+      <div class="actions">
+        <button class="btn" data-copy>Copy</button>
+        <button class="btn" data-search>Search</button>
+      </div>
+    </section>
+
+    <!-- Product Launch Trigger Card -->
+    <section class="card" data-trigger="product">
+      <h3>Product Launch Trigger</h3>
+      <pre data-template>"[industry]" AND (
+  "launches new platform" OR "introduces feature" OR "new release" OR "beta launch" OR 
+  "rolls out update" OR "integration with" OR "product unveiled" OR "new app available"
+) [location]</pre>
+      <div class="actions">
+        <button class="btn" data-copy>Copy</button>
+        <button class="btn" data-search>Search</button>
+      </div>
+    </section>
+
+    <!-- Partnership Trigger Card -->
+    <section class="card" data-trigger="partnership">
+      <h3>Partnership Trigger</h3>
+      <pre data-template>"[industry]" AND (
+  "strategic partnership" OR "channel partner program" OR "ecosystem expansion" OR 
+  "joins marketplace" OR "co-selling agreement" OR "distribution deal" OR 
+  "technology alliance" OR "collaborates with"
+) [location]</pre>
+      <div class="actions">
+        <button class="btn" data-copy>Copy</button>
+        <button class="btn" data-search>Search</button>
+      </div>
+    </section>
+
+    <!-- Service Gap Opportunities Card -->
+    <section class="card" data-trigger="servicegap">
+      <h3>Service Gap Opportunities</h3>
+      <pre data-template>(
+  "need help with" OR "looking for" OR "solution wanted" OR "anyone know how to" OR 
+  "need recommendation" OR "can anyone suggest" OR "advice on" OR "who can help" OR 
+  "anyone offer" OR "can't find a solution" OR "missing feature" OR "no good options" OR 
+  "wish there was" OR "frustrated with" OR "alternative to" OR "recommend software for" OR 
+  "recommend tool for" OR "recommend platform for" OR "is there a way to" OR "automation for" OR 
+  "how do I manage" OR "struggling to scale" OR "pain point" OR "problem finding" OR 
+  "difficulty in" OR "challenge is" OR "vendor needed" OR "service provider" OR "can pay for"
+) AND "[industry]" [location]</pre>
+      <div class="actions">
+        <button class="btn" data-copy>Copy</button>
+        <button class="btn" data-search>Search</button>
+      </div>
+    </section>
+
+    <!-- Acquisition & Merger Opportunities Card -->
     <section class="card" data-trigger="acquisition">
       <h3>Acquisition & Merger Opportunities</h3>
       <pre data-template>(
