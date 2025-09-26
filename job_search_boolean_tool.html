@@ -245,7 +245,7 @@
         <div class="main-content">
             <div class="input-section">
                 <div class="input-group">
-                    <label for="jobTitle">Job Title / Role (Optional)</label>
+                    <label for="jobTitle">Job Title / Role</label>
                     <input type="text" id="jobTitle" placeholder="e.g., Software Engineer, Marketing Manager" />
                 </div>
 
@@ -272,6 +272,17 @@
                         <option value="small">Small (51-200)</option>
                         <option value="medium">Medium (201-1000)</option>
                         <option value="large">Large (1000+)</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="timeFilter">⏱️ Time Range</label>
+                    <select id="timeFilter">
+                        <option value="">Anytime</option>
+                        <option value="1m" selected>Last Month</option>
+                        <option value="3m">Last 3 Months</option>
+                        <option value="6m">Last 6 Months</option>
+                        <option value="1y">Last Year</option>
                     </select>
                 </div>
 
@@ -306,7 +317,7 @@
                     </div>
                     <div class="tip-card">
                         <h4>⏰ Timing Matters</h4>
-                        <p>Search for recent content (past month) for the freshest opportunities and leads.</p>
+                        <p>Recent content often reveals the freshest opportunities and leads. Use the time filter for best results.</p>
                     </div>
                     <div class="tip-card">
                         <h4>🌐 Multiple Platforms</h4>
@@ -325,10 +336,10 @@
             const industry = document.getElementById('industry').value.trim();
             const companySize = document.getElementById('companySize').value;
             const searchType = document.getElementById('searchType').value;
+            const timeFilter = document.getElementById('timeFilter').value;
 
-            // Now only require at least one field to be filled
-            if (!jobTitle && !skills && !location && !industry) {
-                alert('Please enter at least one search criteria');
+            if (!jobTitle && !skills) {
+                alert('Please enter at least a job title or skills');
                 return;
             }
 
@@ -337,12 +348,45 @@
             resultsDiv.classList.remove('hidden');
 
             // Generate different types of searches
-            const searches = generateHiddenJobSearches(jobTitle, skills, location, industry, companySize, searchType);
+            const searches = generateHiddenJobSearches(jobTitle, skills, location, industry, companySize, searchType, timeFilter);
             
             searches.forEach(search => {
                 const resultDiv = createSearchResult(search);
                 resultsDiv.appendChild(resultDiv);
             });
+        }
+
+        function getTimeFilterQuery(timeFilter) {
+            if (!timeFilter) return '';
+            
+            const now = new Date();
+            let fromDate;
+            
+            switch(timeFilter) {
+                case '1m':
+                    fromDate = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+                    break;
+                case '3m':
+                    fromDate = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate());
+                    break;
+                case '6m':
+                    fromDate = new Date(now.getFullYear(), now.getMonth() - 6, now.getDate());
+                    break;
+                case '1y':
+                    fromDate = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+                    break;
+                default:
+                    return '';
+            }
+            
+            // Format date as YYYY-MM-DD for Google search
+            const formatDate = (date) => {
+                return date.getFullYear() + '-' + 
+                       String(date.getMonth() + 1).padStart(2, '0') + '-' + 
+                       String(date.getDate()).padStart(2, '0');
+            };
+            
+            return ` after:${formatDate(fromDate)}`;
         }
 
         function getJobBoardExclusions() {
@@ -371,15 +415,16 @@
             return ' AND ' + exclusions.map(site => `-site:${site}`).join(' AND ');
         }
 
-        function generateHiddenJobSearches(jobTitle, skills, location, industry, companySize, searchType) {
+        function generateHiddenJobSearches(jobTitle, skills, location, industry, companySize, searchType, timeFilter) {
             const searches = [];
             const skillsArray = skills ? skills.split(',').map(s => s.trim()) : [];
+            const timeQuery = getTimeFilterQuery(timeFilter);
             
-            // Company Career Pages (only if we have job title or skills)
-            if ((jobTitle || skillsArray.length > 0) && searchType !== 'recruiter') {
+            // Google Search for Company Career Pages
+            if (searchType !== 'recruiter') {
                 searches.push({
                     title: '🌐 Company Career Pages & Hidden Listings',
-                    query: buildCareerPageQuery(jobTitle, skillsArray, location, industry),
+                    query: buildCareerPageQuery(jobTitle, skillsArray, location, industry, timeQuery),
                     platform: 'Google',
                     description: 'Find jobs posted directly on company websites, bypassing job boards'
                 });
@@ -388,7 +433,7 @@
             // LinkedIn Posts for Hiring Signals
             searches.push({
                 title: '📢 LinkedIn Hiring Signals',
-                query: buildLinkedInHiringQuery(jobTitle, skillsArray, location, industry),
+                query: buildLinkedInHiringQuery(jobTitle, skillsArray, location, industry, timeQuery),
                 platform: 'Google (LinkedIn)',
                 description: searchType === 'recruiter' ? 'Companies posting about hiring needs - recruitment opportunities' : 'Companies announcing hiring plans'
             });
@@ -396,34 +441,26 @@
             // Twitter/X Hiring Posts
             searches.push({
                 title: '🐦 Social Media Hiring Posts',
-                query: buildSocialMediaQuery(jobTitle, skillsArray, location, industry),
+                query: buildSocialMediaQuery(jobTitle, skillsArray, location, industry, timeQuery),
                 platform: 'Google (Twitter/X)',
                 description: 'Informal hiring announcements on social media'
             });
 
-            // NEW: Recently Funded Companies - Always show this
-            searches.push({
-                title: '💰 Recently Funded Companies',
-                query: buildRecentFundingQuery(location, industry, jobTitle, skillsArray),
-                platform: 'Google',
-                description: 'Companies that have recently raised funding and are likely expanding their teams'
-            });
-
-            // Company Growth & Expansion News (only if we have job-related criteria)
-            if ((jobTitle || skillsArray.length > 0) && searchType !== 'recruiter') {
+            // Company Blogs & News
+            if (searchType !== 'recruiter') {
                 searches.push({
                     title: '📰 Company Growth & Expansion News',
-                    query: buildGrowthNewsQuery(jobTitle, skillsArray, location, industry),
+                    query: buildGrowthNewsQuery(jobTitle, skillsArray, location, industry, timeQuery),
                     platform: 'Google',
                     description: 'Companies announcing growth, funding, or expansion - often hiring soon'
                 });
             }
 
             // GitHub Repository Hiring
-            if (jobTitle && (jobTitle.toLowerCase().includes('engineer') || jobTitle.toLowerCase().includes('developer')) || skillsArray.some(s => ['python', 'javascript', 'react', 'node', 'java', 'c++'].includes(s.toLowerCase()))) {
+            if (jobTitle.toLowerCase().includes('engineer') || jobTitle.toLowerCase().includes('developer') || skillsArray.some(s => ['python', 'javascript', 'react', 'node', 'java', 'c++'].includes(s.toLowerCase()))) {
                 searches.push({
                     title: '💻 GitHub Repository Hiring',
-                    query: buildGitHubHiringQuery(jobTitle, skillsArray, location),
+                    query: buildGitHubHiringQuery(jobTitle, skillsArray, location, timeQuery),
                     platform: 'Google (GitHub)',
                     description: 'Open source projects and companies hiring through GitHub'
                 });
@@ -433,7 +470,7 @@
             if (searchType === 'recruiter' || searchType === 'both') {
                 searches.push({
                     title: '🎯 Companies Struggling to Hire',
-                    query: buildRecruiterOpportunityQuery(jobTitle, skillsArray, location, industry),
+                    query: buildRecruiterOpportunityQuery(jobTitle, skillsArray, location, industry, timeQuery),
                     platform: 'Google',
                     description: 'Companies expressing hiring difficulties - recruitment service opportunities'
                 });
@@ -442,7 +479,7 @@
             // Startup/Scale-up Focus
             searches.push({
                 title: '🚀 Startup & Scale-up Opportunities',
-                query: buildStartupQuery(jobTitle, skillsArray, location, industry),
+                query: buildStartupQuery(jobTitle, skillsArray, location, industry, timeQuery),
                 platform: 'Google',
                 description: 'Fast-growing companies often hiring informally'
             });
@@ -450,7 +487,7 @@
             return searches;
         }
 
-        function buildCareerPageQuery(jobTitle, skills, location, industry) {
+        function buildCareerPageQuery(jobTitle, skills, location, industry, timeQuery) {
             let query = '';
             
             if (jobTitle) {
@@ -476,10 +513,12 @@
                 query += ` AND "${industry}"`;
             }
             
+            query += timeQuery;
+            
             return query;
         }
 
-        function buildLinkedInHiringQuery(jobTitle, skills, location, industry) {
+        function buildLinkedInHiringQuery(jobTitle, skills, location, industry, timeQuery) {
             let query = 'site:linkedin.com/posts OR site:linkedin.com/pulse';
             
             if (jobTitle) {
@@ -501,10 +540,12 @@
                 query += ` AND "${industry}"`;
             }
             
+            query += timeQuery;
+            
             return query;
         }
 
-        function buildSocialMediaQuery(jobTitle, skills, location, industry) {
+        function buildSocialMediaQuery(jobTitle, skills, location, industry, timeQuery) {
             let query = '(site:twitter.com OR site:x.com)';
             
             if (jobTitle) {
@@ -522,44 +563,12 @@
                 query += ` AND "${location}"`;
             }
             
-            return query;
-        }
-
-        function buildRecentFundingQuery(location, industry, jobTitle, skills) {
-            // Build a comprehensive funding query that works with or without job title
-            let query = '("raised funding" OR "funding round" OR "investment" OR "Series A" OR "Series B" OR "Series C" OR "seed funding" OR "venture capital" OR "closes funding" OR "secures investment")';
-            
-            // Location is most important for this search
-            if (location) {
-                query += ` AND "${location}"`;
-            }
-            
-            // Industry helps narrow down relevant companies
-            if (industry) {
-                query += ` AND "${industry}"`;
-            }
-            
-            // Add job title or skills if provided, but make it optional
-            if (jobTitle) {
-                query += ` AND ("${jobTitle}" OR "hiring" OR "team expansion" OR "growing team")`;
-            } else if (skills && skills.length > 0) {
-                const skillTerms = skills.slice(0, 2).map(skill => `"${skill}"`).join(' OR ');
-                query += ` AND ("hiring" OR "team expansion" OR "growing team" OR ${skillTerms})`;
-            } else {
-                // Even without job criteria, look for hiring indicators
-                query += ` AND ("hiring" OR "team expansion" OR "growing team" OR "new hires")`;
-            }
-            
-            // Exclude job boards to focus on news and company announcements
-            query += getJobBoardExclusions();
-            
-            // Add time relevance hints
-            query += ' AND ("2024" OR "2025" OR "recent" OR "this year")';
+            query += timeQuery;
             
             return query;
         }
 
-        function buildGrowthNewsQuery(jobTitle, skills, location, industry) {
+        function buildGrowthNewsQuery(jobTitle, skills, location, industry, timeQuery) {
             let query = '("funding" OR "investment" OR "Series A" OR "Series B" OR "expansion" OR "growing team")';
             
             if (jobTitle) {
@@ -575,11 +584,12 @@
             }
             
             query += getJobBoardExclusions();
+            query += timeQuery;
             
             return query;
         }
 
-        function buildGitHubHiringQuery(jobTitle, skills, location) {
+        function buildGitHubHiringQuery(jobTitle, skills, location, timeQuery) {
             let query = 'site:github.com';
             
             query += ' AND ("hiring" OR "jobs" OR "careers" OR "join our team")';
@@ -593,10 +603,12 @@
                 query += ` AND "${location}"`;
             }
             
+            query += timeQuery;
+            
             return query;
         }
 
-        function buildRecruiterOpportunityQuery(jobTitle, skills, location, industry) {
+        function buildRecruiterOpportunityQuery(jobTitle, skills, location, industry, timeQuery) {
             let query = '("struggling to hire" OR "difficult to find" OR "talent shortage" OR "recruitment challenge")';
             
             if (jobTitle) {
@@ -611,10 +623,12 @@
                 query += ` AND "${location}"`;
             }
             
+            query += timeQuery;
+            
             return query;
         }
 
-        function buildStartupQuery(jobTitle, skills, location, industry) {
+        function buildStartupQuery(jobTitle, skills, location, industry, timeQuery) {
             let query = '("startup" OR "scale-up" OR "early stage" OR "seed funded")';
             
             if (jobTitle) {
@@ -630,6 +644,8 @@
             if (industry) {
                 query += ` AND "${industry}"`;
             }
+            
+            query += timeQuery;
             
             return query;
         }
