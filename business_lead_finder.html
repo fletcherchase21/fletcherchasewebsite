@@ -40,6 +40,15 @@
         </select>
       </div>
       <div class="input">
+        <label>Timeframe:</label>
+        <select id="timeframe">
+          <option value="any">Any time</option>
+          <option value="1m">Last month</option>
+          <option value="3m">Last 3 months</option>
+          <option value="6m">Last 6 months</option>
+        </select>
+      </div>
+      <div class="input">
         <label>Engines:</label><br>
         <label><input type="checkbox" id="eng-google" checked> Google</label>
         <label><input type="checkbox" id="eng-bing"> Bing</label>
@@ -53,7 +62,10 @@
   <main class="grid">
     <section class="card" data-trigger="funding">
       <h3>Funding Trigger</h3>
-      <pre data-template>"[industry]" AND ("raises Series A" OR "funding round" OR "venture-backed" OR "IPO") [location]</pre>
+      <pre data-template>"[industry]" AND (
+  "raises Series A" OR "raises Series B" OR "funding round" OR "venture-backed" OR 
+  "seed investment" OR "capital raise" OR "private equity investment" OR "IPO announced"
+) [location]</pre>
       <div class="actions">
         <button class="btn" data-copy>Copy</button>
         <button class="btn" data-search>Search</button>
@@ -62,7 +74,10 @@
 
     <section class="card" data-trigger="expansion">
       <h3>Expansion Trigger</h3>
-      <pre data-template>"[industry]" AND ("expands to" OR "opens office in" OR "new market entry" OR "global rollout") [location]</pre>
+      <pre data-template>"[industry]" AND (
+  "expands to" OR "opens office in" OR "new branch" OR "launches operations" OR 
+  "new market entry" OR "international expansion" OR "franchise opening" OR "regional hub"
+) [location]</pre>
       <div class="actions">
         <button class="btn" data-copy>Copy</button>
         <button class="btn" data-search>Search</button>
@@ -71,7 +86,10 @@
 
     <section class="card" data-trigger="product">
       <h3>Product Launch Trigger</h3>
-      <pre data-template>"[industry]" AND ("launches new platform" OR "beta release" OR "introduces feature" OR "integration with") [location]</pre>
+      <pre data-template>"[industry]" AND (
+  "launches new platform" OR "introduces feature" OR "new release" OR "beta launch" OR 
+  "rolls out update" OR "integration with" OR "product unveiled" OR "new app available"
+) [location]</pre>
       <div class="actions">
         <button class="btn" data-copy>Copy</button>
         <button class="btn" data-search>Search</button>
@@ -80,7 +98,11 @@
 
     <section class="card" data-trigger="partnership">
       <h3>Partnership Trigger</h3>
-      <pre data-template>"[industry]" AND ("strategic partnership" OR "channel partner program" OR "ecosystem expansion" OR "joins marketplace") [location]</pre>
+      <pre data-template>"[industry]" AND (
+  "strategic partnership" OR "channel partner program" OR "ecosystem expansion" OR 
+  "joins marketplace" OR "co-selling agreement" OR "distribution deal" OR 
+  "technology alliance" OR "collaborates with"
+) [location]</pre>
       <div class="actions">
         <button class="btn" data-copy>Copy</button>
         <button class="btn" data-search>Search</button>
@@ -89,7 +111,14 @@
 
     <section class="card" data-trigger="servicegap">
       <h3>Service Gap Opportunities</h3>
-      <pre data-template>("need help with" OR "looking for" OR "solution wanted" OR "anyone know how to") AND "[industry]" [location]</pre>
+      <pre data-template>(
+  "need help with" OR "looking for" OR "solution wanted" OR "anyone know how to" OR 
+  "need recommendation" OR "can anyone suggest" OR "advice on" OR "who can help" OR 
+  "anyone offer" OR "looking to hire" OR "need a freelancer" OR "outsourcing" OR 
+  "seeking agency" OR "need consultant" OR "struggling with" OR "issue with" OR 
+  "problem finding" OR "difficulty in" OR "challenge is" OR "recommend a company" OR 
+  "where can I find" OR "vendor needed" OR "service provider" OR "can pay for"
+) AND "[industry]" [location]</pre>
       <div class="actions">
         <button class="btn" data-copy>Copy</button>
         <button class="btn" data-search>Search</button>
@@ -102,10 +131,35 @@
   <script>
     function buildEngineUrl(engine, q) {
       const encoded = encodeURIComponent(q);
+      const tf = document.getElementById('timeframe').value;
       switch(engine) {
-        case 'google': return `https://www.google.com/search?q=${encoded}`;
-        case 'bing': return `https://www.bing.com/search?q=${encoded}`;
-        case 'ddg': return `https://duckduckgo.com/?q=${encoded}`;
+        case 'google': {
+          let url = `https://www.google.com/search?q=${encoded}`;
+          if(tf !== 'any') {
+            if(tf === '1m') url += '&tbs=qdr:m';
+            if(tf === '3m') url += '&tbs=qdr:3m';
+            if(tf === '6m') url += '&tbs=qdr:6m';
+          }
+          return url;
+        }
+        case 'bing': {
+          let url = `https://www.bing.com/search?q=${encoded}`;
+          if(tf !== 'any') {
+            if(tf === '1m') url += '&qft=+filterui:age-lt=1m';
+            if(tf === '3m') url += '&qft=+filterui:age-lt=3m';
+            if(tf === '6m') url += '&qft=+filterui:age-lt=6m';
+          }
+          return url;
+        }
+        case 'ddg': {
+          let url = `https://duckduckgo.com/?q=${encoded}`;
+          if(tf !== 'any') {
+            if(tf === '1m') url += '&df=m';
+            if(tf === '3m') url += '&df=3m';
+            if(tf === '6m') url += '&df=6m';
+          }
+          return url;
+        }
         case 'linkedin': return `https://www.linkedin.com/search/results/all/?keywords=${encoded}`;
         case 'social': return `https://twitter.com/search?q=${encoded}`;
         default: return `https://www.google.com/search?q=${encoded}`;
@@ -116,7 +170,7 @@
       const loc = document.getElementById('location').value.trim();
       const ind = document.getElementById('industry').value;
       let q = template.replace(/\[industry\]/g, ind);
-      q = q.replace(/\[location\]/g, loc ? `AND ("${loc}" OR ${loc})` : '');
+      q = q.replace(/\[location\]/g, loc ? `AND (\"${loc}\" OR ${loc})` : '');
       return q.trim();
     }
 
